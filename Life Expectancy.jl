@@ -45,10 +45,10 @@ end
 
 # ╔═╡ 7d6cc304-e79a-48c8-8d6a-75ca2c6d068a
 begin
-	weeks_in_row = 20
+	weeks_in_row = 52
 	weeks_df = DataFrame(Country=[], Row=[], Col=[])
 	for df in eachrow(leab_in_weeks)
-		for week = 1:df.Weeks
+		for week = 0:df.Weeks
 			row = floor(Int, week / weeks_in_row)
 			col = mod(week, weeks_in_row);
 			push!(weeks_df, Dict(:Country=>df.Country, :Row=>row, :Col=>col))
@@ -59,16 +59,18 @@ end
 
 # ╔═╡ 3b01944a-c0af-4f81-aea4-87b24f7763c8
 begin		
-	# Scatter plot with some custom settings
 	@df weeks_df scatter(
 		:Col,
 		:Row,
 		group = :Country,
 		title = "Life expectancy at birth",
-		xlabel = "Col",
-		ylabel = "Row",
-		m = (0.5, [:cross :hex :star7], 12),
-		bg = RGB(0.2, 0.2, 0.2)
+		xlabel = "Week",
+		ylabel = "Year",
+		# markercolor = [[:Blue :Green :Yellow :Magenta :Cyan :Orange :Yellow :Red :Purple :Black]],
+		markersize = 6,
+		markerstrokewidth = 0,
+		bg = RGB(0.2, 0.2, 0.2),
+		size=(1000, 1600)
 	)
 end
 
