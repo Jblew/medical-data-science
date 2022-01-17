@@ -8,6 +8,7 @@ using InteractiveUtils
 begin
 	using RDatasets
 	using StatsPlots
+	using DataFrames
 end
 
 # ╔═╡ b9820176-77c8-11ec-30c5-c78a0802666e
@@ -15,21 +16,57 @@ md"""
 Let's see visually how life expectancy compares using week chart
 """
 
-# ╔═╡ a12c2ae4-975c-4747-ad8f-07e5ee8af6fb
-iris = dataset("datasets", "iris");
+# ╔═╡ 9ca41fa6-f5d5-4360-8b60-6fd5ce4f5caa
+begin
+	life_expectancy_at_birth=DataFrame(Country=[], Years=[])
+	push!(life_expectancy_at_birth, Dict(:Country=> "Japan", :Years=>84.74))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Italy", :Years=>82.12))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Germany", :Years=>80.57))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Poland", :Years=>78.58))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Ukraine", :Years=>71.57))
+	push!(life_expectancy_at_birth, Dict(:Country=> "North Korea", :Years=>70.11))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Yemen", :Years=>65.18))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Congo", :Years=>58.79))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Nigeria", :Years=>53.02))
+	push!(life_expectancy_at_birth, Dict(:Country=> "Chad", :Years=>49.81))
+	life_expectancy_at_birth
+end
+
+# ╔═╡ c45c0d7e-f96f-4848-ac8d-fd7c9e566256
+begin
+	years_to_weeks(years) = floor(Int, years * 52.0)
+	
+	leab_in_weeks=DataFrame(Country=[], Weeks=[])
+	for df in eachrow(life_expectancy_at_birth)
+		push!(leab_in_weeks, Dict(:Country => df.Country, :Weeks => years_to_weeks(df.Years)))
+	end
+	leab_in_weeks
+end
+
+# ╔═╡ 7d6cc304-e79a-48c8-8d6a-75ca2c6d068a
+begin
+	weeks_in_row = 20
+	weeks_df = DataFrame(Country=[], Row=[], Col=[])
+	for df in eachrow(leab_in_weeks)
+		for week = 1:df.Weeks
+			row = floor(Int, week / weeks_in_row)
+			col = mod(week, weeks_in_row);
+			push!(weeks_df, Dict(:Country=>df.Country, :Row=>row, :Col=>col))
+		end
+	end
+	nothing
+end
 
 # ╔═╡ 3b01944a-c0af-4f81-aea4-87b24f7763c8
-begin
-	print(iris)
-		
+begin		
 	# Scatter plot with some custom settings
-	@df iris scatter(
-		:SepalLength,
-		:SepalWidth,
-		group = :Species,
-		title = "My awesome plot",
-		xlabel = "Length",
-		ylabel = "Width",
+	@df weeks_df scatter(
+		:Col,
+		:Row,
+		group = :Country,
+		title = "Life expectancy at birth",
+		xlabel = "Col",
+		ylabel = "Row",
 		m = (0.5, [:cross :hex :star7], 12),
 		bg = RGB(0.2, 0.2, 0.2)
 	)
@@ -38,10 +75,12 @@ end
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 RDatasets = "ce6b1742-4840-55fa-b093-852dadbb1d8b"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
 [compat]
+DataFrames = "~1.3.1"
 RDatasets = "~0.7.6"
 StatsPlots = "~0.14.30"
 """
@@ -1238,7 +1277,9 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═b9820176-77c8-11ec-30c5-c78a0802666e
 # ╠═9f3b75aa-fa3a-4c9e-9cc0-2d2ab39b20cf
-# ╠═a12c2ae4-975c-4747-ad8f-07e5ee8af6fb
+# ╠═9ca41fa6-f5d5-4360-8b60-6fd5ce4f5caa
+# ╠═c45c0d7e-f96f-4848-ac8d-fd7c9e566256
+# ╠═7d6cc304-e79a-48c8-8d6a-75ca2c6d068a
 # ╠═3b01944a-c0af-4f81-aea4-87b24f7763c8
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
