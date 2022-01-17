@@ -1,10 +1,10 @@
 ### A Pluto.jl notebook ###
-# v0.12.18
+# v0.17.5
 
 using Markdown
 using InteractiveUtils
 
-# 
+# ╔═╡ f5d29a2c-17b8-4316-8b51-dc627aa61591
 md"""
 # Patient Barbara
 
@@ -13,3 +13,27 @@ Barbara, 36-year old woman with failure of an internal organ. The disease reduce
 - Q1. *What is the cost of additional year of life withour quality-of-life correction?*
 - Q2. *What is the cost of one additional year of life with quality-of-life correction and a 5% discont rate?*
 """
+
+# ╔═╡ c6ecc03d-54a2-46ce-806c-c222e3b1dae6
+
+
+# ╔═╡ 00000000-0000-0000-0000-000000000001
+PLUTO_PROJECT_TOML_CONTENTS = """
+[deps]
+"""
+
+# ╔═╡ 00000000-0000-0000-0000-000000000002
+PLUTO_MANIFEST_TOML_CONTENTS = """
+# This file is machine-generated - editing it directly is not advised
+
+julia_version = "1.7.1"
+manifest_format = "2.0"
+
+[deps]
+"""
+
+# ╔═╡ Cell order:
+# ╠═f5d29a2c-17b8-4316-8b51-dc627aa61591
+# ╠═c6ecc03d-54a2-46ce-806c-c222e3b1dae6
+# ╟─00000000-0000-0000-0000-000000000001
+# ╟─00000000-0000-0000-0000-000000000002
