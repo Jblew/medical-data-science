@@ -15,20 +15,26 @@ md"""
 # ╔═╡ 5101d3e4-0f27-4000-9442-4db2baeb62eb
 begin
 	qol_in_time = DataFrame(
-		:Year    => [0,   20,   40,   50,   60,   70,  75,  77,   78.58], 
-		:Quality => [1.0, 0.95, 0.9,  0.85, 0.80, 0.4, 0.0, 0.0,  0.0  ],
+		:Year    => [0,   20,   40,   50,   60,   70,  75,  77,   78.58, 100 ], 
+		:Quality => [1.0, 0.95, 0.9,  0.85, 0.80, 0.4, 0.0, 0.0,  0.0,   0.0 ],
 	)
 	nothing
 end
 
-# ╔═╡ a5164f57-dbe0-48a8-8da4-9114835eedc5
-qol_in_time
-
-# ╔═╡ 164c46a2-6801-402c-979d-5dfa74b4b1ee
-@df qol_in_time bar(:Quality, :Year)
-
 # ╔═╡ 340f6903-64cb-494d-a357-e1e09e5356a1
-plot(qol_in_time.Year, qol_in_time.Quality, seriestype=:steppost)
+begin
+	plot(
+		qol_in_time.Year, qol_in_time.Quality,
+		title="Jakość życia",
+		seriestype=:steppost, 
+		w=3, fill = (0, 0.2, :red), 
+		xlabel="Lata życia", ylabel="Jakość życia [%]",
+		ann=[
+			(30, 0.5, "QALY"),
+			(80, 0.7, "DALY"),
+		]
+	)
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1218,11 +1224,9 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═23865c42-786a-11ec-348c-9798e115cc72
+# ╟─23865c42-786a-11ec-348c-9798e115cc72
 # ╠═4301e351-fb7d-4ccb-9c1c-55205685f815
 # ╠═5101d3e4-0f27-4000-9442-4db2baeb62eb
-# ╠═a5164f57-dbe0-48a8-8da4-9114835eedc5
-# ╠═164c46a2-6801-402c-979d-5dfa74b4b1ee
 # ╠═340f6903-64cb-494d-a357-e1e09e5356a1
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
