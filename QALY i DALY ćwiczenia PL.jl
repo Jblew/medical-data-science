@@ -118,13 +118,43 @@ begin
 end
 
 # ╔═╡ 28d2b3be-58cf-4e1d-a493-40942324bca7
+md"""
+Jak rozumieć ten wykres? OECD przyjęło jako próg wiek 75 lat. Oznacza to więc liczbę osób, które nie dożyły 75 lat na 100 tyś osób razy średnią ilość lat brakujących do 75 lat.
 
+Gdyby chcieć porównywać ilość utraconych lat ze wszystkich przyczyn w stosunku do średniej długości życia w każdym kraju osobno, to dla każdego przypadku PYLL wyniósłby zero. Czy to prawda? 
+Sprawdźmy!
+"""
 
 # ╔═╡ b997783e-332a-408c-b3a7-1415ad56070b
+begin
+	life_expectancy_at_birth_of_healthy_person = 80
+	population = 100 * 1000
+	morbidity = 0.005 # 0.5%
+	years_lost_from_the_disease = 15
+	
+	no_patients = morbidity * population
+	no_healthy = population - no_patients
+	
+	# If we calculate PYLL of this disease compared to healthy majority
+	pyll_of_disease = (life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease) * no_patients
 
+	# And now total PYLL taking that people die either naturally (healthy) or from this disease
+	patient_life_expectancy = life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease
+	average_life_expectancy = (no_patients * patient_life_expectancy + no_healthy * life_expectancy_at_birth_of_healthy_person) / population
+
+	patient_pyll = average_life_expectancy - patient_life_expectancy
+	total_pyll = no_patients * patient_pyll
+
+	md"""
+	- **PYLL of disease compared to healthy majority**: $pyll_of_disease years
+	- **Average life expectancy for both healthy and patients:** $average_life_expectancy years
+	- **PYLL per patient:** $(round(patient_pyll)) years
+	- **Total PYLL per population**: $(round(total_pyll)) years
+	"""
+end
 
 # ╔═╡ c3dde8f3-824b-4e94-a01e-b190a44da8fe
-
+pyll_2018_df
 
 # ╔═╡ df7de74c-69f5-45c2-9253-bcf9109ab3ec
 md"""
@@ -1421,7 +1451,7 @@ version = "0.9.1+5"
 # ╟─fecb833b-a499-4a0a-a5ba-d95da7b30ddb
 # ╟─5bb8e383-fdb4-48de-9047-8dda51b4e437
 # ╠═1e2d413e-c98a-40f0-9580-d40fc5596a63
-# ╠═28d2b3be-58cf-4e1d-a493-40942324bca7
+# ╟─28d2b3be-58cf-4e1d-a493-40942324bca7
 # ╠═b997783e-332a-408c-b3a7-1415ad56070b
 # ╠═c3dde8f3-824b-4e94-a01e-b190a44da8fe
 # ╟─df7de74c-69f5-45c2-9253-bcf9109ab3ec
