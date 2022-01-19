@@ -55,7 +55,7 @@ end
 
 # ╔═╡ 340f6903-64cb-494d-a357-e1e09e5356a1
 begin
-	function plotQALY(; years::Vector{Int32}=[], quality::Vector{Float32}=[])
+	function plotQALY(; years::Vector{Float64}=[], quality::Vector{Float64}=[])
 		plot(
 			years, quality,
 			title="Jakość życia",
