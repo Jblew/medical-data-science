@@ -23,17 +23,21 @@ end
 
 # ╔═╡ 340f6903-64cb-494d-a357-e1e09e5356a1
 begin
-	plot(
-		qol_in_time.Year, qol_in_time.Quality,
-		title="Jakość życia",
-		seriestype=:steppost, 
-		w=3, fill = (0, 0.2, :red), 
-		xlabel="Lata życia", ylabel="Jakość życia [%]",
-		ann=[
-			(30, 0.5, "QALY"),
-			(80, 0.7, "DALY"),
-		]
-	)
+	function plotQALY(; years::Vector{Int32}=[], quality::Vector{Float32}=[])
+		plot(
+			years, quality,
+			title="Jakość życia",
+			seriestype=:steppost, 
+			w=3, fill = (0, 0.2, :red), 
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			ann=[
+				(30, 0.5, "QALY"),
+				(80, 0.7, "DALY"),
+			]
+		)
+	end
+
+	plotQALY(years=qol_in_time.Year, quality=qol_in_time.Quality)
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
