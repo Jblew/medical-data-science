@@ -14,22 +14,82 @@ md"""
 
 # ╔═╡ d5ad0de5-bb80-423a-817b-ad72c4aeb3cb
 md"""
-### 1. Projektujesz podział środków w ochronie zdrowia. Co musisz wiedzieć aby mądrze je rozdzielić na leczenie poszczególnych chorób?
+### 1. Jak sprawiedliwie podzielić środki w opiece zdrowotnej na leczenie poszczególnych chorób?
 
-Należy mieć sposób oszacowania wpływu chorób na jednostki, na populacje a także na cały system opieki zdrowotnej.
+Możemy wydawać pieniądze proporcjonalnie do liczby chorych na daną chorobę.
 
-### 2. Jak oszacować wpływ poszczególnych chorób na jednostki/populacje/system?
-
-Musimy mieć możliwość mierzenia wskaźników:
-- Epidemiologicznych dotyczących populacji: średnia długość życia, oczekiwana długość życia wg wieku
-- Epidemiologicznych dotyczących choroby: chorobowość, śmiertelność
-- Dotyczących wpływu choroby na pacjenta: skrócenie życia, obniżenie jakości życia, obniżenie zdolności do pracy
-- Dotyczących wpływu leczenia na chorobę: koszt leczenia, wydłużenie życia po leczeniu, poprawa jakości życia po leczeniu, prawdopodobieństwo powikłań
-
-### Dzisiaj zajmiemy się:
-1. Pomiarem wpływu choroby na pacjenta
-2. Pomiarem wpływu leczenia na przebieg choroby
+Problem: Niektóre choroby są lekkie i nie utrudniają życia natomiast inne uniemożliwiają praktyczne funkcjonowanie
 """
+
+# ╔═╡ f37366ff-8590-4c50-b424-1eb6a6e59766
+md"""
+### 2. Jak uwzględnić ciężkość choroby?
+
+Musimy stworzyć wskaźnik ciężkości choroby. Zagadnienie ciężkości choroby nazywane jest **disease burden** (brzemieniem choroby)
+
+W jaki sposób choroba wpływa na życie człowieka? 
+
+1. Skraca życie
+2. Obniża jakość życia
+
+Łącząc te dwa wskaźniki otrzymamy:
+
+`burden = skrócenie_życia + obniżenie_jakości_życia`
+"""
+
+# ╔═╡ 6b1bab92-63e7-42e9-b59d-4dbff19b60cf
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide1.png")
+
+# ╔═╡ 3e9add81-e846-4190-8772-62eb87f71641
+md"""
+Wyzwania dla takiego wskaźnika?
+
+- Jak obliczyć skrócenie życia, skoro nie wiemy ile chory żyłby gdyby nie choroba
+- Jak porównać różne stany chorobowe między sobą? Czy bardziej obniża jakość życia utrata oczu czy ciężka marskość wątroby?
+- Aby połączyć skrócenie życia i obniżenie jakości życia muszą być one wyrażone identyczną jednostką. W innym przypadku nie uzyskamy porównywalnej skalarnej wartości
+"""
+
+# ╔═╡ 436dd1ab-b723-4bea-902d-dc8039be5543
+md"""
+### 4. Jak obliczyć skrócenie życia?
+
+Nie wiemy ile chory żyłby gdyby nie choroba. Zastosowanie tego wskaźnika w kontekście pojedynczego człowieka jest więc bardzo trudne. Znacznie łatwiej policzyć tą wartość dla populacji używając średniej oczekiwanej długości życia w momencie zachorowania np zawężając wskaźnik jeszcze do płci.
+"""
+
+# ╔═╡ 038c878e-0f9f-45e6-9b57-cfb87171a7d7
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide2.png")
+
+# ╔═╡ 462c0489-4a66-4987-a63a-97db261b546a
+md"""
+Używa się powszechnie wskaźnika PYLL *potential years-of-life lost* = ilość utraconych lat, które osoba mogłaby potencjalnie przeżyć gdyby nie choroba
+
+```
+PYLL = wiek_referencyjny - wiek_w_chwili_śmierci
+```
+
+oraz populacyjnie:
+
+```
+PYLL = średnia_długość_życia - średni_wiek_śmierci_na_chorobę
+```
+"""
+
+# ╔═╡ ce3fbf7f-1dde-4d4a-9cab-133dcc201ae4
+md"""
+> **Zadanie 1.** Ile wynosi PYLL / 100 tysięcy osób jeśli w tej populacji:
+> - średnia długość zycia wynosi 70 lat
+> - ilość chorych na chorobę wynosi 1000
+> - średni wiek śmierci na tą chorobę to 60 lat
+"""
+
+# ╔═╡ fecb833b-a499-4a0a-a5ba-d95da7b30ddb
+
+
+# ╔═╡ 5bb8e383-fdb4-48de-9047-8dda51b4e437
+
+
+# ╔═╡ 1e2d413e-c98a-40f0-9580-d40fc5596a63
+
 
 # ╔═╡ df7de74c-69f5-45c2-9253-bcf9109ab3ec
 md"""
@@ -46,6 +106,12 @@ Choroba wpływa na pacjenta w trojaki sposób:
 
 # ╔═╡ 4d2175f4-83e9-4fc8-9e17-940a6c5a748b
 PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide1.png")
+
+# ╔═╡ 9a0ad709-fbb2-4294-8f30-01b6b96eedbf
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide2.png")
+
+# ╔═╡ 86f75d49-e3ad-4135-bae6-1515cb9eb8ea
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide3.png")
 
 # ╔═╡ 5101d3e4-0f27-4000-9442-4db2baeb62eb
 begin
@@ -74,6 +140,9 @@ begin
 
 	plotQALY(years=qol_in_time.Year, quality=qol_in_time.Quality)
 end
+
+# ╔═╡ 2bcdce58-8bf8-4c7c-b6f5-c1b2db3aa42a
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide1.png")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1235,9 +1304,22 @@ version = "0.9.1+5"
 # ╠═8742a194-eed3-4d09-8b27-589ff87f252a
 # ╟─23865c42-786a-11ec-348c-9798e115cc72
 # ╟─d5ad0de5-bb80-423a-817b-ad72c4aeb3cb
+# ╟─f37366ff-8590-4c50-b424-1eb6a6e59766
+# ╟─6b1bab92-63e7-42e9-b59d-4dbff19b60cf
+# ╟─3e9add81-e846-4190-8772-62eb87f71641
+# ╟─436dd1ab-b723-4bea-902d-dc8039be5543
+# ╟─038c878e-0f9f-45e6-9b57-cfb87171a7d7
+# ╟─462c0489-4a66-4987-a63a-97db261b546a
+# ╟─ce3fbf7f-1dde-4d4a-9cab-133dcc201ae4
+# ╠═fecb833b-a499-4a0a-a5ba-d95da7b30ddb
+# ╠═5bb8e383-fdb4-48de-9047-8dda51b4e437
+# ╠═1e2d413e-c98a-40f0-9580-d40fc5596a63
 # ╟─df7de74c-69f5-45c2-9253-bcf9109ab3ec
 # ╠═4d2175f4-83e9-4fc8-9e17-940a6c5a748b
+# ╠═9a0ad709-fbb2-4294-8f30-01b6b96eedbf
+# ╟─86f75d49-e3ad-4135-bae6-1515cb9eb8ea
 # ╠═5101d3e4-0f27-4000-9442-4db2baeb62eb
 # ╠═340f6903-64cb-494d-a357-e1e09e5356a1
+# ╠═2bcdce58-8bf8-4c7c-b6f5-c1b2db3aa42a
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
