@@ -44,6 +44,9 @@ Choroba wpływa na pacjenta w trojaki sposób:
 3. Generuje kolejne chobory (powikłania), które dalej skracają życie i obniżają jakość tego życia
 """
 
+# ╔═╡ 4d2175f4-83e9-4fc8-9e17-940a6c5a748b
+PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide1.png")
+
 # ╔═╡ 5101d3e4-0f27-4000-9442-4db2baeb62eb
 begin
 	qol_in_time = DataFrame(
@@ -1233,6 +1236,7 @@ version = "0.9.1+5"
 # ╟─23865c42-786a-11ec-348c-9798e115cc72
 # ╟─d5ad0de5-bb80-423a-817b-ad72c4aeb3cb
 # ╟─df7de74c-69f5-45c2-9253-bcf9109ab3ec
+# ╠═4d2175f4-83e9-4fc8-9e17-940a6c5a748b
 # ╠═5101d3e4-0f27-4000-9442-4db2baeb62eb
 # ╠═340f6903-64cb-494d-a357-e1e09e5356a1
 # ╟─00000000-0000-0000-0000-000000000001
