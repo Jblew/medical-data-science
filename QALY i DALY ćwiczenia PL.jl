@@ -121,14 +121,15 @@ end
 md"""
 Jak rozumieć ten wykres? OECD przyjęło jako próg wiek 75 lat. Oznacza to więc liczbę osób, które nie dożyły 75 lat na 100 tyś osób razy średnią ilość lat brakujących do 75 lat.
 
-Gdyby chcieć porównywać ilość utraconych lat ze wszystkich przyczyn w stosunku do średniej długości życia w każdym kraju osobno, to dla każdego przypadku PYLL wyniósłby zero. 
+Gdyby chcieć porównywać ilość utraconych lat ze wszystkich przyczyn w stosunku do średniej długości życia w każdym kraju osobno, to dla każdego przypadku PYLL wyniósłby zero. Czy to prawda? 
+Sprawdźmy!
 """
 
 # ╔═╡ b997783e-332a-408c-b3a7-1415ad56070b
 begin
 	life_expectancy_at_birth_of_healthy_person = 80
 	population = 100 * 1000
-	morbidity = 0.02 # 2%
+	morbidity = 0.005 # 0.5%
 	years_lost_from_the_disease = 15
 	
 	no_patients = morbidity * population
@@ -147,8 +148,8 @@ begin
 	md"""
 	- **PYLL of disease compared to healthy majority**: $pyll_of_disease years
 	- **Average life expectancy for both healthy and patients:** $average_life_expectancy years
-	- **PYLL per patient:** $patient_pyll years
-	- **Total PYLL per population**: $total_pyll years
+	- **PYLL per patient:** $(round(patient_pyll)) years
+	- **Total PYLL per population**: $(round(total_pyll)) years
 	"""
 end
 
