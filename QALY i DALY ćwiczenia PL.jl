@@ -70,7 +70,7 @@ PYLL = wiek_referencyjny - wiek_w_chwili_śmierci
 oraz populacyjnie:
 
 ```
-PYLL = średnia_długość_życia - średni_wiek_śmierci_na_chorobę
+PYLL = (średnia_długość_życia - średni_wiek_śmierci_na_chorobę) × ilość_chorych
 ```
 """
 
@@ -78,16 +78,23 @@ PYLL = średnia_długość_życia - średni_wiek_śmierci_na_chorobę
 md"""
 > **Zadanie 1.** Ile wynosi PYLL / 100 tysięcy osób jeśli w tej populacji:
 > - średnia długość zycia wynosi 70 lat
-> - ilość chorych na chorobę wynosi 1000
+> - ilość chorych na chorobę wynosi 500
 > - średni wiek śmierci na tą chorobę to 60 lat
 """
 
 # ╔═╡ fecb833b-a499-4a0a-a5ba-d95da7b30ddb
-
+md"""
+> **Rozwiązanie 1.**
+> ```
+> PYLL = (70 - 60) * 500 = 10 * 500 = 5000
+> ```
+> W tej populacji choroba powoduje utratę pięciu tysięcy potencjalnych lat życia
+"""
 
 # ╔═╡ 5bb8e383-fdb4-48de-9047-8dda51b4e437
 md"""
 #### Przykład PYLL na 100tyś w krajach OECD
+Dla wszystkich przyczyn przedwczesnej śmierci.
 Źródło danych: https://data.oecd.org/healthstat/potential-years-of-life-lost.htm
 """
 
@@ -111,6 +118,12 @@ begin
 end
 
 # ╔═╡ 28d2b3be-58cf-4e1d-a493-40942324bca7
+
+
+# ╔═╡ b997783e-332a-408c-b3a7-1415ad56070b
+
+
+# ╔═╡ c3dde8f3-824b-4e94-a01e-b190a44da8fe
 
 
 # ╔═╡ df7de74c-69f5-45c2-9253-bcf9109ab3ec
@@ -1405,10 +1418,12 @@ version = "0.9.1+5"
 # ╟─038c878e-0f9f-45e6-9b57-cfb87171a7d7
 # ╟─462c0489-4a66-4987-a63a-97db261b546a
 # ╟─ce3fbf7f-1dde-4d4a-9cab-133dcc201ae4
-# ╠═fecb833b-a499-4a0a-a5ba-d95da7b30ddb
+# ╟─fecb833b-a499-4a0a-a5ba-d95da7b30ddb
 # ╟─5bb8e383-fdb4-48de-9047-8dda51b4e437
 # ╠═1e2d413e-c98a-40f0-9580-d40fc5596a63
 # ╠═28d2b3be-58cf-4e1d-a493-40942324bca7
+# ╠═b997783e-332a-408c-b3a7-1415ad56070b
+# ╠═c3dde8f3-824b-4e94-a01e-b190a44da8fe
 # ╟─df7de74c-69f5-45c2-9253-bcf9109ab3ec
 # ╠═4d2175f4-83e9-4fc8-9e17-940a6c5a748b
 # ╠═9a0ad709-fbb2-4294-8f30-01b6b96eedbf
