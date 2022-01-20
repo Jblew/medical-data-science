@@ -128,9 +128,9 @@ Sprawdźmy!
 # ╔═╡ b997783e-332a-408c-b3a7-1415ad56070b
 begin
 	life_expectancy_at_birth_of_healthy_person = 80
-	population = 100 * 1000
-	morbidity = 0.005 # 0.5%
-	years_lost_from_the_disease = 15
+	population = 1000
+	morbidity = 0.16 # 16%
+	years_lost_from_the_disease = 30
 	
 	no_patients = morbidity * population
 	no_healthy = population - no_patients
@@ -144,17 +144,107 @@ begin
 
 	patient_pyll = average_life_expectancy - patient_life_expectancy
 	total_pyll = no_patients * patient_pyll
-
-	md"""
-	- **PYLL of disease compared to healthy majority**: $pyll_of_disease years
-	- **Average life expectancy for both healthy and patients:** $average_life_expectancy years
-	- **PYLL per patient:** $(round(patient_pyll)) years
-	- **Total PYLL per population**: $(round(total_pyll)) years
-	"""
+	nothing
 end
 
-# ╔═╡ c3dde8f3-824b-4e94-a01e-b190a44da8fe
-pyll_2018_df
+# ╔═╡ 0af7a0a9-04f0-41c9-be8b-ad23b83076cd
+md"""
+- **PYLL of disease (compared to life expectancy of healthy majority)**: $pyll_of_disease years
+- **Average life expectancy for both healthy and patients:** $average_life_expectancy years
+- **PYLL per patient:** $(round(patient_pyll)) years
+- **Total PYLL per population**: $(round(total_pyll)) years (compared to average life expectancy of healthy and patients)
+
+Jak widać to nieprawda. Uwzględniliśmy zmianę sredniej życia związaną z tym, że 0,5% osób jest chorych na chorobę. Jak to wytłumaczyć?
+"""
+
+# ╔═╡ 230e29ba-d01d-4626-92c5-590bdf33b514
+begin
+	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+
+	function plotPopulationExpectedLife(features::Vector{Symbol})
+		p = plot(
+			rectangle(0,0,no_healthy,life_expectancy_at_birth_of_healthy_person), 
+			opacity=.9,
+			xlabel="Populacja", ylabel="Długość życia",
+			label="Zdrowi", legend=:topleft
+		)
+		plot!(p, 
+			rectangle(no_healthy,0,no_patients,patient_life_expectancy),
+			opacity=.9,
+			label="Chorzy",
+		)
+		if :population_average in features
+			plot!(p, 
+				rectangle(0,0,population,average_life_expectancy),
+				opacity=.6,
+				color=:white,
+				label="Wszyscy",
+			)
+		end
+		if :pyll_sick in features
+			plot!(p, 
+				rectangle(
+					no_healthy,
+					patient_life_expectancy,
+					population-no_healthy,
+					life_expectancy_at_birth_of_healthy_person-patient_life_expectancy,
+				),
+				opacity=.6,
+				color=:black,
+				label="PYLL chorych",
+			)
+		end
+		if :pyll_all in features
+			plot!(p, 
+				rectangle(
+					no_healthy,
+					patient_life_expectancy,
+					population-no_healthy,
+					average_life_expectancy-patient_life_expectancy,
+				),
+				opacity=.6,
+				color=:black,
+				label="PYLL wszystkich",
+			)
+		end
+		return p
+	end
+
+	plot(
+		plotPopulationExpectedLife([:a]::Vector{Symbol}),
+		plotPopulationExpectedLife([:population_average]::Vector{Symbol}),
+		plotPopulationExpectedLife([:pyll_sick]::Vector{Symbol}),
+		plotPopulationExpectedLife([:pyll_all]::Vector{Symbol});
+		layout=(2,2)
+	)
+	
+	#plot!(p, 
+	#	rectangle(0,0,population,average_life_expectancy),
+	#	opacity=.5,
+	#	label="Wszyscy",
+	#)
+end
+
+# ╔═╡ f3fb6d19-6bfb-4215-9fec-867a88e978e2
+
+
+# ╔═╡ 80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
+
+
+# ╔═╡ 2e3bcf70-d66d-433d-a259-3fa972dec47e
+
+
+# ╔═╡ 408f6304-d510-4693-be3a-d80c4408bd0b
+
+
+# ╔═╡ b5f2bc8d-2ee1-498c-b767-2eb83af23427
+
+
+# ╔═╡ b8d7fb14-6e04-4d04-8215-ef228fdc6078
+
+
+# ╔═╡ c2cae2e9-7cfd-4689-a566-38a7636c0478
+
 
 # ╔═╡ df7de74c-69f5-45c2-9253-bcf9109ab3ec
 md"""
@@ -1453,7 +1543,15 @@ version = "0.9.1+5"
 # ╠═1e2d413e-c98a-40f0-9580-d40fc5596a63
 # ╟─28d2b3be-58cf-4e1d-a493-40942324bca7
 # ╠═b997783e-332a-408c-b3a7-1415ad56070b
-# ╠═c3dde8f3-824b-4e94-a01e-b190a44da8fe
+# ╠═0af7a0a9-04f0-41c9-be8b-ad23b83076cd
+# ╠═230e29ba-d01d-4626-92c5-590bdf33b514
+# ╠═f3fb6d19-6bfb-4215-9fec-867a88e978e2
+# ╠═80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
+# ╠═2e3bcf70-d66d-433d-a259-3fa972dec47e
+# ╠═408f6304-d510-4693-be3a-d80c4408bd0b
+# ╠═b5f2bc8d-2ee1-498c-b767-2eb83af23427
+# ╠═b8d7fb14-6e04-4d04-8215-ef228fdc6078
+# ╠═c2cae2e9-7cfd-4689-a566-38a7636c0478
 # ╟─df7de74c-69f5-45c2-9253-bcf9109ab3ec
 # ╠═4d2175f4-83e9-4fc8-9e17-940a6c5a748b
 # ╠═9a0ad709-fbb2-4294-8f30-01b6b96eedbf
