@@ -13,7 +13,29 @@ md"""
 """
 
 # ╔═╡ 4cbe161f-1799-4f62-afa0-0fab26e172af
+md"""
+Dotychczas spoglądaliśmy na problematykę chorób jako wpływających na zycie człowieka wyłącznie poprzez przyspieszanie śmierci:
+"""
 
+# ╔═╡ 02fcc6d5-7b73-4117-993d-9d1e872b7669
+begin
+	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+	plotAliveOrDead = plot( 
+		rectangle(0,0,80,100),
+		opacity=1,
+		color=:green,
+		label="Zdrowi",
+		legend=:topleft,
+		ann=[(72.5, 50, text("Zdrowi", 10))]
+	)
+	plot!(plotAliveOrDead, 
+		rectangle(0,0,65,100);
+		color=:red,
+		label="Chorzy",
+		opacity=0.7,
+		ann=[(35, 50, text("Chorzy", 10))]
+	)
+end
 
 # ╔═╡ 2fa3fb65-6d7d-401e-b150-dea40157403f
 begin
@@ -1274,7 +1296,8 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═b685c2ae-7a35-11ec-2df7-1727256a91a5
 # ╠═e03e5d03-252c-42ed-a83a-2ea7d0b714fd
-# ╠═4cbe161f-1799-4f62-afa0-0fab26e172af
+# ╟─4cbe161f-1799-4f62-afa0-0fab26e172af
+# ╠═02fcc6d5-7b73-4117-993d-9d1e872b7669
 # ╠═2fa3fb65-6d7d-401e-b150-dea40157403f
 # ╠═1a8d6743-bc04-4dd7-ae4b-d6726289bd64
 # ╟─00000000-0000-0000-0000-000000000001
