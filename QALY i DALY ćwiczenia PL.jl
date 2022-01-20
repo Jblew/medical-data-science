@@ -161,28 +161,38 @@ Jak widać to nieprawda. Uwzględniliśmy zmianę sredniej życia związaną z t
 begin
 	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
 
-	function plotPopulationExpectedLife(features::Vector{Symbol})
+	function plotPopulationExpectedLife()
 		p = plot(
 			rectangle(0,0,no_healthy,life_expectancy_at_birth_of_healthy_person), 
 			opacity=.9,
 			xlabel="Populacja", ylabel="Długość życia",
-			label="Zdrowi", legend=:topleft
+			label="Zdrowi (przeżyte lata)", legend=:topleft
 		)
 		plot!(p, 
 			rectangle(no_healthy,0,no_patients,patient_life_expectancy),
 			opacity=.9,
 			label="Chorzy",
 		)
-		if :population_average in features
-			plot!(p, 
+	end
+
+	plotPopulationExpectedLife()
+end
+
+# ╔═╡ f3fb6d19-6bfb-4215-9fec-867a88e978e2
+begin
+	plotWithAverage = plotPopulationExpectedLife()
+	plot!(plotWithAverage, 
 				rectangle(0,0,population,average_life_expectancy),
 				opacity=.6,
 				color=:white,
 				label="Wszyscy",
 			)
-		end
-		if :pyll_sick in features
-			plot!(p, 
+end
+
+# ╔═╡ 80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
+begin
+		plotWithSickPYLL = plotPopulationExpectedLife()
+			plot!(plotWithSickPYLL, 
 				rectangle(
 					no_healthy,
 					patient_life_expectancy,
@@ -193,9 +203,12 @@ begin
 				color=:black,
 				label="PYLL chorych",
 			)
-		end
-		if :pyll_all in features
-			plot!(p, 
+end
+
+# ╔═╡ 2e3bcf70-d66d-433d-a259-3fa972dec47e
+begin
+	plotWithPopulationPYLL = plotPopulationExpectedLife()
+			plot!(plotWithPopulationPYLL, 
 				rectangle(
 					no_healthy,
 					patient_life_expectancy,
@@ -206,33 +219,15 @@ begin
 				color=:black,
 				label="PYLL wszystkich",
 			)
-		end
-		return p
-	end
-
-	plot(
-		plotPopulationExpectedLife([:a]::Vector{Symbol}),
-		plotPopulationExpectedLife([:population_average]::Vector{Symbol}),
-		plotPopulationExpectedLife([:pyll_sick]::Vector{Symbol}),
-		plotPopulationExpectedLife([:pyll_all]::Vector{Symbol});
-		layout=(2,2)
+	plot!(plotWithPopulationPYLL, 
+		[0, 1000],
+		[average_life_expectancy,average_life_expectancy];
+		color=:red,
+		label="Średnia długość zycia",
+		opacity=1,
+		ann=[(500, 50, text("Większa długość życia zdrowych\nnie jest odejmowana od PYLL.\n Dlatego PYLL dla populacji nie jest\n zerowy pomimo wpływu chorych\nna obniżenie średniej długości życia", 10))]
 	)
-	
-	#plot!(p, 
-	#	rectangle(0,0,population,average_life_expectancy),
-	#	opacity=.5,
-	#	label="Wszyscy",
-	#)
 end
-
-# ╔═╡ f3fb6d19-6bfb-4215-9fec-867a88e978e2
-
-
-# ╔═╡ 80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
-
-
-# ╔═╡ 2e3bcf70-d66d-433d-a259-3fa972dec47e
-
 
 # ╔═╡ 408f6304-d510-4693-be3a-d80c4408bd0b
 
