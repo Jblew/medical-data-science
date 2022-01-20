@@ -71,6 +71,29 @@ begin
 	plot(p1, p2, p3, p4, layout = (2, 2), legend = false)
 end
 
+# ╔═╡ 836bb1a5-2418-4b1c-9720-d843f415b287
+md"""
+### 4. Animated multiple plots
+"""
+
+# ╔═╡ 1abaf8fe-a443-45ff-b4c2-10e2abfa0051
+begin
+	anim = @animate for i ∈ [p1,p2,p3,p4]
+    	plot(i)
+	end
+	gif(anim, fps = 1)
+end
+
+# ╔═╡ 65706696-12c5-442a-b61a-0f52f92498e6
+md"""
+### 5. Animation
+"""
+
+# ╔═╡ 3c9f547d-33e1-4417-910c-0c21e9b1c079
+@gif for i in 1:50
+    plot(sin, 0, i * 2pi / 10)
+end when i > 30
+
 # ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 backend()
 
@@ -1280,6 +1303,10 @@ version = "0.9.1+5"
 # ╠═1b6ba86a-e856-47d0-8d45-93bf88aa5385
 # ╟─8a5bfc08-cb34-4a7d-be7f-1e04a701abe4
 # ╠═ec29ba26-90b5-43d0-a393-acdf39932e97
+# ╟─836bb1a5-2418-4b1c-9720-d843f415b287
+# ╠═1abaf8fe-a443-45ff-b4c2-10e2abfa0051
+# ╟─65706696-12c5-442a-b61a-0f52f92498e6
+# ╠═3c9f547d-33e1-4417-910c-0c21e9b1c079
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
