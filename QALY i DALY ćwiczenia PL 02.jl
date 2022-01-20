@@ -4,243 +4,44 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 8742a194-eed3-4d09-8b27-589ff87f252a
+# ╔═╡ b685c2ae-7a35-11ec-2df7-1727256a91a5
 using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes
 
-# ╔═╡ 23865c42-786a-11ec-348c-9798e115cc72
+# ╔═╡ e03e5d03-252c-42ed-a83a-2ea7d0b714fd
 md"""
-# QALY i DALY — ekonomiczna ocena usług zdrowotnych. Częsć 01
+# QALY i DALY — ekonomiczna ocena usług zdrowotnych. Częsć 02
 """
 
-# ╔═╡ d5ad0de5-bb80-423a-817b-ad72c4aeb3cb
-md"""
-### 1. Jak sprawiedliwie podzielić środki w opiece zdrowotnej na leczenie poszczególnych chorób?
+# ╔═╡ 4cbe161f-1799-4f62-afa0-0fab26e172af
 
-Możemy wydawać pieniądze proporcjonalnie do liczby chorych na daną chorobę.
 
-Problem: Niektóre choroby są lekkie i nie utrudniają życia natomiast inne uniemożliwiają praktyczne funkcjonowanie
-"""
-
-# ╔═╡ f37366ff-8590-4c50-b424-1eb6a6e59766
-md"""
-### 2. Jak uwzględnić ciężkość choroby?
-
-Musimy stworzyć wskaźnik ciężkości choroby. Zagadnienie ciężkości choroby nazywane jest **disease burden** (obciążenie chorobą)
-
-W jaki sposób choroba wpływa na życie człowieka? 
-
-1. Skraca życie
-2. Obniża jakość życia
-
-Łącząc te dwa wskaźniki otrzymamy:
-
-`burden = skrócenie_życia + obniżenie_jakości_życia`
-"""
-
-# ╔═╡ 6b1bab92-63e7-42e9-b59d-4dbff19b60cf
-PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide1.png")
-
-# ╔═╡ 3e9add81-e846-4190-8772-62eb87f71641
-md"""
-Wyzwania dla takiego wskaźnika?
-
-- Jak obliczyć skrócenie życia, skoro nie wiemy ile chory żyłby gdyby nie choroba
-- Jak porównać różne stany chorobowe między sobą? Czy bardziej obniża jakość życia utrata oczu czy ciężka marskość wątroby?
-- Aby połączyć skrócenie życia i obniżenie jakości życia muszą być one wyrażone identyczną jednostką. W innym przypadku nie uzyskamy porównywalnej skalarnej wartości
-"""
-
-# ╔═╡ 436dd1ab-b723-4bea-902d-dc8039be5543
-md"""
-### 4. Jak obliczyć skrócenie życia?
-
-Nie wiemy ile chory żyłby gdyby nie choroba. Zastosowanie tego wskaźnika w kontekście pojedynczego człowieka jest więc bardzo trudne. Znacznie łatwiej policzyć tą wartość dla populacji używając średniej oczekiwanej długości życia w momencie zachorowania np zawężając wskaźnik jeszcze do płci.
-"""
-
-# ╔═╡ 038c878e-0f9f-45e6-9b57-cfb87171a7d7
-PlutoUI.LocalResource("QALY i DALY ćwiczenia PL/Slide2.png")
-
-# ╔═╡ 462c0489-4a66-4987-a63a-97db261b546a
-md"""
-Używa się powszechnie wskaźnika PYLL *potential years-of-life lost* = ilość utraconych lat, które osoba mogłaby potencjalnie przeżyć gdyby nie choroba
-
-```
-PYLL = wiek_referencyjny - wiek_w_chwili_śmierci
-```
-
-oraz populacyjnie:
-
-```
-PYLL = (średnia_długość_życia - średni_wiek_śmierci_na_chorobę) × ilość_chorych
-```
-"""
-
-# ╔═╡ ce3fbf7f-1dde-4d4a-9cab-133dcc201ae4
-md"""
-> **Zadanie 1.** Ile wynosi PYLL / 100 tysięcy osób jeśli w tej populacji:
-> - średnia długość zycia wynosi 70 lat
-> - ilość chorych na chorobę wynosi 500
-> - średni wiek śmierci na tą chorobę to 60 lat
-"""
-
-# ╔═╡ fecb833b-a499-4a0a-a5ba-d95da7b30ddb
-md"""
-> **Rozwiązanie 1.**
-> ```
-> PYLL = (70 - 60) * 500 = 10 * 500 = 5000
-> ```
-> W tej populacji choroba powoduje utratę pięciu tysięcy potencjalnych lat życia
-"""
-
-# ╔═╡ 5bb8e383-fdb4-48de-9047-8dda51b4e437
-md"""
-#### Przykład PYLL na 100tyś w krajach OECD
-Dla wszystkich przyczyn przedwczesnej śmierci.
-Źródło danych: https://data.oecd.org/healthstat/potential-years-of-life-lost.htm
-"""
-
-# ╔═╡ 1e2d413e-c98a-40f0-9580-d40fc5596a63
+# ╔═╡ 2fa3fb65-6d7d-401e-b150-dea40157403f
 begin
-	df = DataFrame(CSV.File("QALY i DALY ćwiczenia PL/pyll_per_country.csv"))
-	pyll_2018_df = @from i in df begin
-            @where i.TIME == 2018 && i.SUBJECT == "TOT"
-			@orderby i.Value
-            @select i
-            @collect DataFrame
-       end
-	palette = cgrad(:BrBG_10);
-	plot(
-		pyll_2018_df.LOCATION, pyll_2018_df.Value;
-		seriestype=:bar, size=(700, 350),
-		xticks=(0.5:size(pyll_2018_df.LOCATION, 1), pyll_2018_df.LOCATION),
-		xrotation=90, seriescolor=ColorSchemes.prism.colors,
-		title="PYLL/100k w krajach OECD"
+	qol_in_time = DataFrame(
+		:Year    => [0,   20,   40,   50,   60,   70,  75,  77,   78.58, 100 ], 
+		:Quality => [1.0, 0.95, 0.9,  0.85, 0.80, 0.4, 0.0, 0.0,  0.0,   0.0 ],
 	)
-end
-
-# ╔═╡ 28d2b3be-58cf-4e1d-a493-40942324bca7
-md"""
-Jak rozumieć ten wykres? OECD przyjęło jako próg wiek 75 lat. Oznacza to więc liczbę osób, które nie dożyły 75 lat na 100 tyś osób razy średnią ilość lat brakujących do 75 lat.
-
-Gdyby chcieć porównywać ilość utraconych lat ze wszystkich przyczyn w stosunku do średniej długości życia w każdym kraju osobno, to dla każdego przypadku PYLL wyniósłby zero. Czy to prawda? 
-Sprawdźmy!
-"""
-
-# ╔═╡ b997783e-332a-408c-b3a7-1415ad56070b
-begin
-	life_expectancy_at_birth_of_healthy_person = 80
-	population = 1000
-	morbidity = 0.16 # 16%
-	years_lost_from_the_disease = 30
-	
-	no_patients = morbidity * population
-	no_healthy = population - no_patients
-	
-	# If we calculate PYLL of this disease compared to healthy majority
-	pyll_of_disease = (life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease) * no_patients
-
-	# And now total PYLL taking that people die either naturally (healthy) or from this disease
-	patient_life_expectancy = life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease
-	average_life_expectancy = (no_patients * patient_life_expectancy + no_healthy * life_expectancy_at_birth_of_healthy_person) / population
-
-	patient_pyll = average_life_expectancy - patient_life_expectancy
-	total_pyll = no_patients * patient_pyll
 	nothing
 end
 
-# ╔═╡ 0af7a0a9-04f0-41c9-be8b-ad23b83076cd
-md"""
-- **PYLL of disease (compared to life expectancy of healthy majority)**: $pyll_of_disease years
-- **Average life expectancy for both healthy and patients:** $average_life_expectancy years
-- **PYLL per patient:** $(round(patient_pyll)) years
-- **Total PYLL per population**: $(round(total_pyll)) years (compared to average life expectancy of healthy and patients)
-
-Jak widać to nieprawda. Uwzględniliśmy zmianę sredniej życia związaną z tym, że 0,5% osób jest chorych na chorobę. Jak to wytłumaczyć?
-"""
-
-# ╔═╡ 230e29ba-d01d-4626-92c5-590bdf33b514
+# ╔═╡ 1a8d6743-bc04-4dd7-ae4b-d6726289bd64
 begin
-	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
-
-	function plotPopulationExpectedLife()
-		p = plot(
-			rectangle(0,0,no_healthy,life_expectancy_at_birth_of_healthy_person), 
-			opacity=.9,
-			xlabel="Populacja", ylabel="Długość życia",
-			label="Zdrowi (przeżyte lata)", legend=:topleft
-		)
-		plot!(p, 
-			rectangle(no_healthy,0,no_patients,patient_life_expectancy),
-			opacity=.9,
-			label="Chorzy",
+	function plotQALY(; years::Vector{Float64}=[], quality::Vector{Float64}=[])
+		plot(
+			years, quality,
+			title="Jakość życia",
+			seriestype=:steppost, 
+			w=3, fill = (0, 0.2, :red), 
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			ann=[
+				(30, 0.5, "QALY"),
+				(80, 0.7, "DALY"),
+			]
 		)
 	end
 
-	plotBasic = plotPopulationExpectedLife()
+	plotQALY(years=qol_in_time.Year, quality=qol_in_time.Quality)
 end
-
-# ╔═╡ f3fb6d19-6bfb-4215-9fec-867a88e978e2
-begin
-	plotWithAverage = plotPopulationExpectedLife()
-	plot!(plotWithAverage, 
-				rectangle(0,0,population,average_life_expectancy),
-				opacity=.6,
-				color=:white,
-				label="Wszyscy",
-			)
-end
-
-# ╔═╡ 80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
-begin
-		plotWithSickPYLL = plotPopulationExpectedLife()
-			plot!(plotWithSickPYLL, 
-				rectangle(
-					no_healthy,
-					patient_life_expectancy,
-					population-no_healthy,
-					life_expectancy_at_birth_of_healthy_person-patient_life_expectancy,
-				),
-				opacity=.6,
-				color=:black,
-				label="PYLL chorych",
-			)
-end
-
-# ╔═╡ 2e3bcf70-d66d-433d-a259-3fa972dec47e
-begin
-	plotWithPopulationPYLL = plotPopulationExpectedLife()
-			plot!(plotWithPopulationPYLL, 
-				rectangle(
-					no_healthy,
-					patient_life_expectancy,
-					population-no_healthy,
-					average_life_expectancy-patient_life_expectancy,
-				),
-				opacity=.6,
-				color=:black,
-				label="PYLL wszystkich",
-			)
-	plot!(plotWithPopulationPYLL, 
-		[0, 1000],
-		[average_life_expectancy,average_life_expectancy];
-		color=:red,
-		label="Średnia długość zycia",
-		opacity=1,
-		ann=[(500, 50, text("Większa długość życia zdrowych\nnie jest odejmowana od PYLL.\n Dlatego PYLL dla populacji nie jest\n zerowy pomimo wpływu chorych\nna obniżenie średniej długości życia", 10))]
-	)
-end
-
-# ╔═╡ 408f6304-d510-4693-be3a-d80c4408bd0b
-begin
-	anim = @animate for i ∈ [plotBasic,plotWithSickPYLL,plotWithAverage,plotWithPopulationPYLL]
-    	plot(i)
-	end
-	gif(anim, fps = 0.5)
-end
-
-# ╔═╡ b5f2bc8d-2ee1-498c-b767-2eb83af23427
-md"""
-Zapraszam do części 2...
-"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -254,7 +55,7 @@ Query = "1a8c2f83-1ff3-5112-b086-8aa67b057ba1"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
 [compat]
-CSV = "~0.10.1"
+CSV = "~0.10.2"
 ColorSchemes = "~3.16.0"
 DataFrames = "~1.3.1"
 Plots = "~1.25.5"
@@ -323,9 +124,9 @@ version = "1.0.8+0"
 
 [[deps.CSV]]
 deps = ["CodecZlib", "Dates", "FilePathsBase", "InlineStrings", "Mmap", "Parsers", "PooledArrays", "SentinelArrays", "Tables", "Unicode", "WeakRefStrings"]
-git-tree-sha1 = "fbee070c56e0096dac13067eca8181ec148468e1"
+git-tree-sha1 = "9519274b50500b8029973d241d32cfbf0b127d97"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.10.1"
+version = "0.10.2"
 
 [[deps.Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
@@ -335,9 +136,9 @@ version = "1.16.1+1"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "6e39c91fb4b84dcb870813c91674bdebb9145895"
+git-tree-sha1 = "54fc4400de6e5c3e27be6047da2ef6ba355511f8"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.11.5"
+version = "1.11.6"
 
 [[deps.ChangesOfVariables]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -392,9 +193,9 @@ uuid = "d38c429a-6771-53c6-b99e-75d170b6e991"
 version = "0.5.7"
 
 [[deps.Crayons]]
-git-tree-sha1 = "b618084b49e78985ffa8422f32b9838e397b9fc2"
+git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
 uuid = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
-version = "4.1.0"
+version = "4.1.1"
 
 [[deps.DataAPI]]
 git-tree-sha1 = "cc70b17275652eb47bc9e5f81635981f13cea5c8"
@@ -1471,27 +1272,10 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
-# ╠═8742a194-eed3-4d09-8b27-589ff87f252a
-# ╟─23865c42-786a-11ec-348c-9798e115cc72
-# ╟─d5ad0de5-bb80-423a-817b-ad72c4aeb3cb
-# ╟─f37366ff-8590-4c50-b424-1eb6a6e59766
-# ╟─6b1bab92-63e7-42e9-b59d-4dbff19b60cf
-# ╟─3e9add81-e846-4190-8772-62eb87f71641
-# ╟─436dd1ab-b723-4bea-902d-dc8039be5543
-# ╟─038c878e-0f9f-45e6-9b57-cfb87171a7d7
-# ╟─462c0489-4a66-4987-a63a-97db261b546a
-# ╟─ce3fbf7f-1dde-4d4a-9cab-133dcc201ae4
-# ╟─fecb833b-a499-4a0a-a5ba-d95da7b30ddb
-# ╟─5bb8e383-fdb4-48de-9047-8dda51b4e437
-# ╠═1e2d413e-c98a-40f0-9580-d40fc5596a63
-# ╟─28d2b3be-58cf-4e1d-a493-40942324bca7
-# ╠═b997783e-332a-408c-b3a7-1415ad56070b
-# ╠═0af7a0a9-04f0-41c9-be8b-ad23b83076cd
-# ╠═230e29ba-d01d-4626-92c5-590bdf33b514
-# ╠═f3fb6d19-6bfb-4215-9fec-867a88e978e2
-# ╠═80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
-# ╠═2e3bcf70-d66d-433d-a259-3fa972dec47e
-# ╠═408f6304-d510-4693-be3a-d80c4408bd0b
-# ╟─b5f2bc8d-2ee1-498c-b767-2eb83af23427
+# ╠═b685c2ae-7a35-11ec-2df7-1727256a91a5
+# ╠═e03e5d03-252c-42ed-a83a-2ea7d0b714fd
+# ╠═4cbe161f-1799-4f62-afa0-0fab26e172af
+# ╠═2fa3fb65-6d7d-401e-b150-dea40157403f
+# ╠═1a8d6743-bc04-4dd7-ae4b-d6726289bd64
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
