@@ -31,6 +31,49 @@ begin
 	)
 end
 
+# ╔═╡ f0237be4-a0a7-4470-9081-1cf150f6d719
+md"""
+### 2. Draw rectangles in the plot
+"""
+
+# ╔═╡ 237ab387-d3cc-4c1b-a1df-5fb016630579
+begin
+	# define a function that returns a Plots.Shape
+	rectangle(w, h, x, y) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+	
+	# p = plot(0:5,0:5)
+	p = plot(rectangle(3,2,0,0), opacity=.5)
+	plot!(p, rectangle(1,1,4,3), opacity=.5)
+	plot!(p, rectangle(1,1,2,2), opacity=.5)
+	plot!(p, rectangle(1,1,5,0), opacity=.5)
+end
+
+# ╔═╡ 1b6ba86a-e856-47d0-8d45-93bf88aa5385
+# Scalar wise operations
+
+begin
+	vec = [1,2,3]
+	(vec, +, .+, vec .+ 1)
+end
+
+# ╔═╡ 8a5bfc08-cb34-4a7d-be7f-1e04a701abe4
+md"""
+### 3. Multiple plots
+"""
+
+# ╔═╡ ec29ba26-90b5-43d0-a393-acdf39932e97
+begin
+	x = 1:10; y = rand(10, 2)
+	p1 = plot(x, y) # Make a line plot
+	p2 = scatter(x, y) # Make a scatter plot
+	p3 = plot(x, y, xlabel = "This one is labelled", lw = 3, title = "Subtitle")
+	p4 = histogram(x, y) # Four histograms each with 10 points? Why not!
+	plot(p1, p2, p3, p4, layout = (2, 2), legend = false)
+end
+
+# ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
+backend()
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1232,5 +1275,11 @@ version = "0.9.1+5"
 # ╠═f1ab0c42-79f7-11ec-2aef-47e9025b567a
 # ╟─89b19cdd-c63f-4e33-b04e-f44b285afb28
 # ╠═1c671956-33d1-46d0-a8c1-cada13f9741d
+# ╟─f0237be4-a0a7-4470-9081-1cf150f6d719
+# ╠═237ab387-d3cc-4c1b-a1df-5fb016630579
+# ╠═1b6ba86a-e856-47d0-8d45-93bf88aa5385
+# ╟─8a5bfc08-cb34-4a7d-be7f-1e04a701abe4
+# ╠═ec29ba26-90b5-43d0-a393-acdf39932e97
+# ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
