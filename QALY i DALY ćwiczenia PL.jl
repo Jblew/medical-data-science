@@ -25,7 +25,7 @@ Problem: Niektóre choroby są lekkie i nie utrudniają życia natomiast inne un
 md"""
 ### 2. Jak uwzględnić ciężkość choroby?
 
-Musimy stworzyć wskaźnik ciężkości choroby. Zagadnienie ciężkości choroby nazywane jest **disease burden** (brzemieniem choroby)
+Musimy stworzyć wskaźnik ciężkości choroby. Zagadnienie ciężkości choroby nazywane jest **disease burden** (obciążenie chorobą)
 
 W jaki sposób choroba wpływa na życie człowieka? 
 
@@ -175,7 +175,7 @@ begin
 		)
 	end
 
-	plotPopulationExpectedLife()
+	plotBasic = plotPopulationExpectedLife()
 end
 
 # ╔═╡ f3fb6d19-6bfb-4215-9fec-867a88e978e2
@@ -230,7 +230,12 @@ begin
 end
 
 # ╔═╡ 408f6304-d510-4693-be3a-d80c4408bd0b
-
+begin
+	anim = @animate for i ∈ [plotBasic,plotWithSickPYLL,plotWithAverage,plotWithPopulationPYLL]
+    	plot(i)
+	end
+	gif(anim, fps = 0.5)
+end
 
 # ╔═╡ b5f2bc8d-2ee1-498c-b767-2eb83af23427
 
