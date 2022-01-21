@@ -18,6 +18,144 @@ md"""
 # QALY i DALY — ekonomiczna ocena usług zdrowotnych. Częsć 03
 """
 
+# ╔═╡ a1638102-90f3-4459-a6d1-2ecf7fbfb0cf
+
+md"""
+Jak połączyć wskaźniki PYLL (potencjalne lata utracone przez chorobę) i YLD (lata przeżyte z chorobą)?
+
+Ponieważ oba wskaźniki mają ten sam wymiar można je po prostu dodać. Ten wskaźnik jest nazywany DALY (disability-adjusted life years). Czyli utracone lata skorygowane niepełnosprawnością.
+"""
+
+# ╔═╡ 4a987dd3-b5ba-42c8-92f5-4875b32ba25a
+begin
+	zad5_skrocenie_zycia = 20
+	zad5_obnizenie_jakosci = 0.5
+	zad5_okres_chorowania = 16
+	nothing
+end
+
+# ╔═╡ 39509739-a137-4b49-8596-eaf167d3b26c
+md"""
+**Zadanie 5.** Ile lat DALY zabiera choroba, która skraca życie o $(zad5_skrocenie_zycia) oraz powoduje obniżenie jakości życia o $(zad5_obnizenie_jakosci*100) % przez $(zad5_okres_chorowania) lat?
+"""
+
+# ╔═╡ 566c835a-ee2a-4692-9161-dee4bde4aa29
+md"""
+Narysujmy najpierw wykres:
+"""
+
+# ╔═╡ 5a29ad55-d0ab-4136-84c9-db1ee0efcbdb
+begin
+	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
+	
+	function plotDALY(;skrocenie_zycia,czas_choroby,obnizenie_jakosci,plot_choroba=true,plot_pyll=false,plot_yld=false)
+		srednia_dlugosc_zycia = 78.58
+		wiek_smierci = srednia_dlugosc_zycia - skrocenie_zycia
+		wiek_zachorowania = wiek_smierci - czas_choroby
+		jakoscZyciaZdrowego = DataFrame(
+			:Year    => [0,   srednia_dlugosc_zycia, 85 ], 
+			:Quality => [1.0, 0.0,   0.0 ],
+		)
+		jakoscZyciaChorego = DataFrame(
+			:Year    => [0, wiek_zachorowania,       wiek_smierci], 
+			:Quality => [1.0, 1.0-obnizenie_jakosci, 0.0  ],
+		)
+		
+
+		p = plot(
+			jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+			label="Życie zdrowego człowieka",
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			seriestype=:steppost, linewidth = 3, linecolor = :green,
+			fill = (0, 0.5, :green),
+		)
+		if plot_choroba
+			plot!(p,
+				jakoscZyciaChorego.Year, jakoscZyciaChorego.Quality,
+				label="Życie chorego człowieka",
+				seriestype=:steppost, linewidth = 3, linecolor = :red,
+				fill = (0, 0.99, :darkred),
+			)
+			
+			plot!(p, 
+				[25,jakoscZyciaChorego.Year[2]], [0.9,jakoscZyciaChorego.Quality[2]], arrow=(:closed, 2.0), color = :white, label=nothing,
+				ann=[(25,0.9, text("Zachorowanie", 8, :white))]
+			)
+			plot!(p, 
+				[62,wiek_smierci], [0.2,0.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+				ann=[(62,0.2, text("Śmierć", 8, :white))]
+			)
+		end
+
+		if plot_pyll
+			plot!(p, 
+				rectangle(wiek_smierci, 0, skrocenie_zycia, 1.0),
+				color = :black, opacity = 0.9, label="PYLL",
+				ann=[(wiek_smierci + skrocenie_zycia/2,0.5, text("PYLL", 8, :white))]
+			)
+		end
+
+		if plot_yld
+			plot!(p, 
+				rectangle(wiek_zachorowania, 1.0-obnizenie_jakosci, czas_choroby, obnizenie_jakosci),
+				color = :black, opacity = 0.8, label="YLD",
+				ann=[(wiek_zachorowania + czas_choroby/2,1.0-obnizenie_jakosci/2, text("YLD", 8, :white))]
+			)
+		end
+		
+		p
+	end
+
+	plot_daly_choroba = plotDALY(
+		skrocenie_zycia = zad5_skrocenie_zycia,
+		obnizenie_jakosci = zad5_obnizenie_jakosci,
+		czas_choroby = zad5_okres_chorowania,
+	)
+end
+
+# ╔═╡ df848c66-05dc-422e-8d75-1b8baa3b3131
+plot_daly_choroba_pyll = plotDALY(
+		skrocenie_zycia = zad5_skrocenie_zycia,
+		obnizenie_jakosci = zad5_obnizenie_jakosci,
+		czas_choroby = zad5_okres_chorowania,
+		plot_pyll = true
+)
+
+# ╔═╡ d7f05e14-5416-4c07-bd93-1b40cd76004d
+plot_daly_choroba_pyll_yld = plotDALY(
+		skrocenie_zycia = zad5_skrocenie_zycia,
+		obnizenie_jakosci = zad5_obnizenie_jakosci,
+		czas_choroby = zad5_okres_chorowania,
+		plot_pyll = true,
+		plot_yld = true
+)
+
+# ╔═╡ 95bbecce-7aa6-4111-9ed3-3b86334da8ba
+plot_daly_pyll_yld = plotDALY(
+		skrocenie_zycia = zad5_skrocenie_zycia,
+		obnizenie_jakosci = zad5_obnizenie_jakosci,
+		czas_choroby = zad5_okres_chorowania,
+		plot_pyll = true,
+		plot_yld = true,
+		plot_choroba = false
+)
+
+# ╔═╡ cb4e1442-3ecc-47a9-8e7e-e2e3fc3d6b66
+begin
+	plots = [
+		plot_daly_choroba,
+		plot_daly_choroba,
+		plot_daly_choroba,
+		plot_daly_choroba_pyll,
+		plot_daly_choroba_pyll_yld,
+		plot_daly_pyll_yld
+	]
+	anim = @animate for i ∈ plots
+    	plot(i)
+	end
+	gif(anim, fps = 1)
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1254,5 +1392,14 @@ version = "0.9.1+5"
 # ╠═5e70c04a-7aea-11ec-1954-c1abedfba9b1
 # ╠═51dfc4a3-d921-4bfb-90fe-4c46f71262b6
 # ╟─1dd2142c-64dd-4a7d-8767-371d3bbc460d
+# ╟─a1638102-90f3-4459-a6d1-2ecf7fbfb0cf
+# ╠═4a987dd3-b5ba-42c8-92f5-4875b32ba25a
+# ╟─39509739-a137-4b49-8596-eaf167d3b26c
+# ╟─566c835a-ee2a-4692-9161-dee4bde4aa29
+# ╠═5a29ad55-d0ab-4136-84c9-db1ee0efcbdb
+# ╠═df848c66-05dc-422e-8d75-1b8baa3b3131
+# ╠═d7f05e14-5416-4c07-bd93-1b40cd76004d
+# ╠═95bbecce-7aa6-4111-9ed3-3b86334da8ba
+# ╠═cb4e1442-3ecc-47a9-8e7e-e2e3fc3d6b66
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
