@@ -5,7 +5,13 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ b685c2ae-7a35-11ec-2df7-1727256a91a5
-using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes, Random, Dates
+using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes, Random, Dates, StatsBase
+
+# ╔═╡ 94ab7a3d-ab31-42b5-a169-1284f36dc338
+html"""<style>
+pluto-output {    font-size: 1.2em;   }
+pluto-input .cm-content { font-size: 0.9em !important; }
+"""
 
 # ╔═╡ e03e5d03-252c-42ed-a83a-2ea7d0b714fd
 md"""
@@ -112,15 +118,19 @@ begin
 	transform!(disability_weights_df, :"Disability Weight" => (dws -> [mapDisabilityWeightField(dw) for dw in dws]) => :DisabilityWeight)
 	disability_weights_df = subset(disability_weights_df, :DisabilityWeight => dw -> dw .> 0.15)
 
-	disability_weights_sample_df = disability_weights_df[rand(1:nrow(disability_weights_df),10),[:Sequela,:DisabilityWeight]]
+	disability_weights_sample_df = disability_weights_df[rand(1:nrow(disability_weights_df),9),:]
 	sort!(disability_weights_sample_df, [:DisabilityWeight])
+	
+	disability_weights_sample_df[:,[:Sequela,:DisabilityWeight]]
 end
 
 
 # ╔═╡ bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
 begin
+	wraptext(s, n) = length(s) <= n ? s : "$(s[1:n-1])\n$(wraptext(s[n:end], n))"
+	
 	function plotDisabilityWeights(dfRaw)
-		df = transform(dfRaw, :Sequela => (sequelas -> [s[1:min(35,end)] for s in sequelas]) => :Sequela)
+		df = transform(dfRaw, :Sequela => (sequelas -> [wraptext(s[1:min(end,140)], 35) for s in sequelas]) => :Sequela)
 		plot(
 			df.Sequela, df.DisabilityWeight;
 			seriestype=:bar, size=(700, 700),
@@ -138,8 +148,65 @@ Tutaj informacja jak obliczano Disability Weights: [https://cdn.who.int/media/do
 W 1990 roku badania bazowały na porównywaniu chorób przez ekspertów, natomiast od 2010 roku opierają się na ankietowaniu osób. Laikom przedstawia się standaryzowane opisy chorób 
 """
 
+# ╔═╡ 5de1e2ef-b12e-4fce-9754-c061e928086f
+md"""
+Oto jakie opisy powyższych chorób zobaczyli uczestnicy ostatniego badania (Salomon et al 2013):
+"""
+
+# ╔═╡ fb463ae9-97f6-4a77-a83c-fe10ab3d0e85
+begin
+	rowToDesc(row) = row[:"Health state lay description"]
+	disability_weights_sample_df_rows = eachrow(disability_weights_sample_df)
+	md"""
+	***
+	
+	**$(disability_weights_sample_df_rows[1][:Sequela])**: 
+	$(disability_weights_sample_df_rows[1][:"Health state lay description"])
+
+	**$(disability_weights_sample_df_rows[2][:Sequela])**: 
+	$(disability_weights_sample_df_rows[2][:"Health state lay description"])
+
+	**$(disability_weights_sample_df_rows[3][:Sequela])**: 
+	$(disability_weights_sample_df_rows[3][:"Health state lay description"])
+
+	**$(disability_weights_sample_df_rows[4][:Sequela])**: 
+	$(disability_weights_sample_df_rows[4][:"Health state lay description"])
+
+	***
+	"""
+end
+
 # ╔═╡ ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
 
+
+# ╔═╡ 547a4309-0541-475b-9086-6b9603c0c655
+md"""
+> **Zadanie 2.** Jakie procentowe obniżenie życia ma osoba chorująca na poniższe choroby:
+"""
+
+# ╔═╡ 3a6254e1-19f2-4853-975c-f36db1a889d9
+begin
+	exc2_diseases = disability_weights_sample_df[StatsBase.sample(1:nrow(disability_weights_sample_df), 2; replace = false), :]
+	exc2_diseases
+end
+
+# ╔═╡ 462adef9-a939-4bdf-a580-7da55a9b58e8
+md"""
+Dla przypomnienia tabela z chorobami:
+"""
+
+# ╔═╡ 5dec0dc5-0651-4f97-9194-6c230c930aaa
+disability_weights_sample_df[:,[:Sequela,:DisabilityWeight]]
+
+# ╔═╡ 88eb64cf-10d7-4240-8bfe-aa6eb8c6d465
+begin
+	exc2_d1 = exc2_diseases[1, :DisabilityWeight]
+	exc2_d2 = exc2_diseases[2, :DisabilityWeight]
+	exc2_sum = floor((exc2_d1 + exc2_d2)*100)/100
+	md"""
+	Odpowiedź do zadania nr 2: Zatem wynik wynosi $(exc2_d1) + $(exc2_d2) = $(exc2_sum)
+	"""
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -152,6 +219,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Query = "1a8c2f83-1ff3-5112-b086-8aa67b057ba1"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
 [compat]
@@ -161,6 +229,7 @@ DataFrames = "~1.3.1"
 Plots = "~1.25.5"
 PlutoUI = "~0.7.30"
 Query = "~1.0.0"
+StatsBase = "~0.33.14"
 StatsPlots = "~0.14.30"
 """
 
@@ -1372,6 +1441,7 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
+# ╠═94ab7a3d-ab31-42b5-a169-1284f36dc338
 # ╠═b685c2ae-7a35-11ec-2df7-1727256a91a5
 # ╟─e03e5d03-252c-42ed-a83a-2ea7d0b714fd
 # ╟─4cbe161f-1799-4f62-afa0-0fab26e172af
@@ -1384,6 +1454,13 @@ version = "0.9.1+5"
 # ╠═d4d6f5d2-78e4-44cf-b53c-c9e16db1de9f
 # ╠═bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
 # ╟─c89c769e-21fc-431f-91c0-11304e3afec9
+# ╟─5de1e2ef-b12e-4fce-9754-c061e928086f
+# ╟─fb463ae9-97f6-4a77-a83c-fe10ab3d0e85
 # ╠═ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
+# ╟─547a4309-0541-475b-9086-6b9603c0c655
+# ╟─3a6254e1-19f2-4853-975c-f36db1a889d9
+# ╟─462adef9-a939-4bdf-a580-7da55a9b58e8
+# ╟─5dec0dc5-0651-4f97-9194-6c230c930aaa
+# ╟─88eb64cf-10d7-4240-8bfe-aa6eb8c6d465
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
