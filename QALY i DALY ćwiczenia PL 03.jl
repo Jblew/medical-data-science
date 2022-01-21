@@ -48,7 +48,15 @@ Narysujmy najpierw wykres:
 begin
 	rectangle(x, y, w, h) = Shape(x .+ [0,w,w,0], y .+ [0,0,h,h])
 	
-	function plotDALY(;skrocenie_zycia,czas_choroby,obnizenie_jakosci,plot_choroba=true,plot_pyll=false,plot_yld=false)
+	function plotDALY(;
+		skrocenie_zycia,
+		czas_choroby,
+		obnizenie_jakosci,
+		plot_choroba=true,
+		plot_pyll=false,
+		plot_yld=false,
+		legend=:topright,
+	)
 		srednia_dlugosc_zycia = 78.58
 		wiek_smierci = srednia_dlugosc_zycia - skrocenie_zycia
 		wiek_zachorowania = wiek_smierci - czas_choroby
@@ -67,7 +75,7 @@ begin
 			label="Życie zdrowego człowieka",
 			xlabel="Lata życia", ylabel="Jakość życia [%]",
 			seriestype=:steppost, linewidth = 3, linecolor = :green,
-			fill = (0, 0.5, :green),
+			fill = (0, 0.5, :green), legend=legend,
 		)
 		if plot_choroba
 			plot!(p,
@@ -155,6 +163,88 @@ begin
 	end
 	gif(anim, fps = 1)
 end
+
+# ╔═╡ ef0bf3a9-f322-4364-aab9-5ebeaa682af2
+begin
+	struct Choroba
+    	skrocenie_zycia::Int
+		czas_trwania::Int
+		obnizenie_jakosci::Float64
+    end
+
+	format_procent(f::Float64) = string(Int(floor(f*100))) * "%"
+	opisz(ch::Choroba) = "skraca życie o $(ch.skrocenie_zycia) lat, obniża jakość o $(format_procent(ch.obnizenie_jakosci)) przez $(ch.czas_trwania) lat"
+	
+	zad6_chorobaA = Choroba(15, 30, 0.06)
+	zad6_chorobaB = Choroba(5, 2, 0.50)
+	nothing
+end
+
+# ╔═╡ ea7157f0-dbc1-4f8e-a20a-15bc379d7703
+md"""
+**Zadanie 6.** Która choroba jest bardziej obciążająca?
+
+- Choroba A: $(opisz(zad6_chorobaA)) (a więc o typie nadciśnienia / choroby wieńcowej)
+- Choroba B: $(opisz(zad6_chorobaB)) (a więc o typie nowotworu złośliwego)
+"""
+
+# ╔═╡ ff8ce60b-d73c-407c-823a-1ba1af58b1f2
+begin
+	yld(ch::Choroba) = ch.czas_trwania * ch.obnizenie_jakosci
+	daly(ch::Choroba) = yld(ch) + ch.czas_trwania
+end
+
+# ╔═╡ 0a45afb4-877b-4d17-b494-434359a88964
+md"""
+Rozwiązanie: obliczmy DALY
+1. Obliczamy YLD czyli ilość lat przeżytych z niepełną sprawnością: 
+
+     Choroba A: $(zad6_chorobaA.czas_trwania) lat ⨉ $(format_procent(zad6_chorobaA.obnizenie_jakosci)) = $(round(yld(zad6_chorobaA),digits=1)) lat
+     
+     Choroba B: $(zad6_chorobaB.czas_trwania) lat ⨉ $(format_procent(zad6_chorobaB.obnizenie_jakosci)) = $(round(yld(zad6_chorobaB),digits=1)) lat
+
+
+2. Obliczamy PYLL czyli ilość potencjalnych lat życia utraconych z powodu choroby. W tym przypadku PYLL jest po prostu równy skróceniu życia przez chorobę
+
+    Choroba A: $(zad6_chorobaA.skrocenie_zycia) lat
+    
+    Choroba B: $(zad6_chorobaB.skrocenie_zycia) lat
+
+
+3. Sumujemy wartości:
+
+    Choroba A: DALYa= $(zad6_chorobaA.skrocenie_zycia) lat + $(round(yld(zad6_chorobaA),digits=1)) lat = $(round(daly(zad6_chorobaA),digits=1)) lat
+
+    Choroba B: DALYb= $(zad6_chorobaB.skrocenie_zycia) lat + $(round(yld(zad6_chorobaB),digits=1)) lat = $(round(daly(zad6_chorobaB),digits=1)) lat
+
+
+Jasno widać, że choroba A jest znacznie większym obciążeniem.
+"""
+
+# ╔═╡ 00ff8ef6-411a-43ea-aed6-9f85f4fedeb3
+begin
+	zad6_plot_choroba(ch::Choroba) = plotDALY(
+		skrocenie_zycia = ch.skrocenie_zycia,
+		obnizenie_jakosci = ch.obnizenie_jakosci,
+		czas_choroby = ch.czas_trwania,
+		plot_pyll = true,
+		plot_yld = true,
+		plot_choroba = false,
+		legend=:bottomleft
+	)
+	zad6_plot_chorobaA = zad6_plot_choroba(zad6_chorobaA)
+	zad6_plot_chorobaB = zad6_plot_choroba(zad6_chorobaB)
+	plot(zad6_plot_chorobaA, zad6_plot_chorobaB, layout = (1, 2), size=(900,300))
+end
+
+# ╔═╡ 30c07113-fe95-4d31-828a-3d01e090cb35
+begin
+	zad6_anim = @animate for i ∈ [zad6_plot_chorobaA,zad6_plot_chorobaB]
+    	plot(i)
+	end
+	gif(zad6_anim, fps = 1)
+end
+	
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1401,5 +1491,11 @@ version = "0.9.1+5"
 # ╠═d7f05e14-5416-4c07-bd93-1b40cd76004d
 # ╠═95bbecce-7aa6-4111-9ed3-3b86334da8ba
 # ╠═cb4e1442-3ecc-47a9-8e7e-e2e3fc3d6b66
+# ╠═ef0bf3a9-f322-4364-aab9-5ebeaa682af2
+# ╟─ea7157f0-dbc1-4f8e-a20a-15bc379d7703
+# ╠═ff8ce60b-d73c-407c-823a-1ba1af58b1f2
+# ╟─0a45afb4-877b-4d17-b494-434359a88964
+# ╠═00ff8ef6-411a-43ea-aed6-9f85f4fedeb3
+# ╠═30c07113-fe95-4d31-828a-3d01e090cb35
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
