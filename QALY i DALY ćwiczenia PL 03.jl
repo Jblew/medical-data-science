@@ -192,7 +192,7 @@ md"""
 # ╔═╡ ff8ce60b-d73c-407c-823a-1ba1af58b1f2
 begin
 	yld(ch::Choroba) = ch.czas_trwania * ch.obnizenie_jakosci
-	daly(ch::Choroba) = yld(ch) + ch.czas_trwania
+	daly(ch::Choroba) = yld(ch) + ch.skrocenie_zycia
 end
 
 # ╔═╡ 0a45afb4-877b-4d17-b494-434359a88964
@@ -1600,7 +1600,7 @@ version = "0.9.1+5"
 # ╠═ef0bf3a9-f322-4364-aab9-5ebeaa682af2
 # ╟─ea7157f0-dbc1-4f8e-a20a-15bc379d7703
 # ╠═ff8ce60b-d73c-407c-823a-1ba1af58b1f2
-# ╟─0a45afb4-877b-4d17-b494-434359a88964
+# ╠═0a45afb4-877b-4d17-b494-434359a88964
 # ╠═00ff8ef6-411a-43ea-aed6-9f85f4fedeb3
 # ╠═30c07113-fe95-4d31-828a-3d01e090cb35
 # ╠═6f3fbc75-5581-4f09-a79f-f3476365839b
