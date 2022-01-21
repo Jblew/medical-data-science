@@ -136,6 +136,28 @@ md"""
 # ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 backend()
 
+# ╔═╡ 00ff0a2d-0826-4265-b665-9230054f2b41
+md"""
+### 8. Arrows on plots
+"""
+
+# ╔═╡ a52e07af-de11-4872-9e9d-19458222439b
+begin
+	jakoscZyciaChorego = DataFrame(
+		:Year    => [0,   30,   78.58], 
+		:Quality => [1.0, 1.0,  0.0  ],
+	)
+	
+	plotJakosc = plot(
+		jakoscZyciaChorego.Year, jakoscZyciaChorego.Quality,
+		seriestype=:line, linewidth = 3, linecolor = :red,
+	)
+	plot!(plotJakosc, 
+		[20,30], [0.8,1.0], arrow=(:closed, 2.0), color = :black, label=nothing,
+		ann=[(20,0.8, text("Zachorowanie"))]
+	)
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1350,5 +1372,7 @@ version = "0.9.1+5"
 # ╠═2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
 # ╟─ed702cc8-a429-48e6-83fb-cbd5820ef9b3
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
+# ╟─00ff0a2d-0826-4265-b665-9230054f2b41
+# ╠═a52e07af-de11-4872-9e9d-19458222439b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
