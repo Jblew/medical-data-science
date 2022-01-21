@@ -56,12 +56,13 @@ begin
 		plot_pyll=false,
 		plot_yld=false,
 		legend=:topright,
+		srednia_dlugosc_zycia = 78.58,
+		labels = true,
 	)
-		srednia_dlugosc_zycia = 78.58
 		wiek_smierci = srednia_dlugosc_zycia - skrocenie_zycia
 		wiek_zachorowania = wiek_smierci - czas_choroby
 		jakoscZyciaZdrowego = DataFrame(
-			:Year    => [0,   srednia_dlugosc_zycia, 85 ], 
+			:Year    => [0,   srednia_dlugosc_zycia, srednia_dlugosc_zycia*1.1 ], 
 			:Quality => [1.0, 0.0,   0.0 ],
 		)
 		jakoscZyciaChorego = DataFrame(
@@ -72,8 +73,8 @@ begin
 
 		p = plot(
 			jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
-			label="Życie zdrowego człowieka",
-			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			label= labels ? "Życie zdrowego człowieka" : "",
+			xlabel= labels ?  "Lata życia" : "", ylabel= labels ?  "Jakość życia [%]" : "",
 			seriestype=:steppost, linewidth = 3, linecolor = :green,
 			fill = (0, 0.5, :green), legend=legend,
 		)
@@ -99,7 +100,7 @@ begin
 			plot!(p, 
 				rectangle(wiek_smierci, 0, skrocenie_zycia, 1.0),
 				color = :black, opacity = 0.9, label="PYLL",
-				ann=[(wiek_smierci + skrocenie_zycia/2,0.5, text("PYLL", 8, :white))]
+				ann= labels ? [(wiek_smierci + skrocenie_zycia/2,0.5, text("PYLL", 8, :white))] : []
 			)
 		end
 
@@ -107,7 +108,7 @@ begin
 			plot!(p, 
 				rectangle(wiek_zachorowania, 1.0-obnizenie_jakosci, czas_choroby, obnizenie_jakosci),
 				color = :black, opacity = 0.8, label="YLD",
-				ann=[(wiek_zachorowania + czas_choroby/2,1.0-obnizenie_jakosci/2, text("YLD", 8, :white))]
+				ann= labels ? [(wiek_zachorowania + czas_choroby/2,1.0-obnizenie_jakosci/2, text("YLD", 8, :white))] : []
 			)
 		end
 		
@@ -168,7 +169,7 @@ end
 begin
 	struct Choroba
     	skrocenie_zycia::Int
-		czas_trwania::Int
+		czas_trwania::Float64
 		obnizenie_jakosci::Float64
     end
 
@@ -245,6 +246,111 @@ begin
 	gif(zad6_anim, fps = 1)
 end
 	
+
+# ╔═╡ 6f3fbc75-5581-4f09-a79f-f3476365839b
+begin
+	zad7_p_lagodny = Choroba(0, 2, 0.3)
+	zad7_p_smiertelny = Choroba(15, 1, 0.9)
+	zad7_p_powiklany = Choroba(4, 7, 0.15)
+	zad7_przebiegi = DataFrame(
+		:Przebieg => [zad7_p_lagodny, zad7_p_smiertelny, zad7_p_powiklany],
+		:Czestosc => [0.72, 0.08,0.2]
+	)
+	nothing
+end
+
+# ╔═╡ 2e19b761-dcde-49dc-8a97-9eb369006943
+md"""
+No dobrze, ale zajmijmy się bardziej życiowym przykładem — fikcyjną chorobą COVID23! 
+
+Założmy, że podobnie jak w COVID19, COVID23 w większości przypadków ma łagodny przebieg. Możemy wyróżnić trzy scenariusze:
+
+- przebieg łagodny: $(opisz(zad7_p_lagodny))
+- przebieg śmiertelny: $(opisz(zad7_p_smiertelny))
+- przebieg powikłany: $(opisz(zad7_p_powiklany)) - np. mgła COVID23
+
+Wiemy jak policzyć obciążenie chorobą DALY dla każdego z wariantów oddzielnie. Ale jak policzyć dla całej choroby? Należy poznać częstość tych przebiegów. Założmy, że:
+
+- przebieg łagodny występuje z częstością $(format_procent(zad7_przebiegi[1,2]))
+- przebieg śmiertelny występuje z częstością $(format_procent(zad7_przebiegi[2,2]))
+- przebieg powikłany występuje z częstością $(format_procent(zad7_przebiegi[3,2]))
+
+**Zadanie 7.** Jakie będzie DALY COVID23?
+
+*Uwaga: na poniższych wykresach średnia długość życia jest skrócona, żeby lepiej zobrazować przebiegi*
+"""
+
+# ╔═╡ f2cc6dca-95f6-4d6f-9d94-046e7c5c670f
+begin
+	function zad7_plotDALY_z_prawdopodobienstwem(przebiegi)
+		ch = StatsBase.sample(przebiegi.Przebieg, ProbabilityWeights(przebiegi.Czestosc))
+		plotDALY(
+			skrocenie_zycia = ch.skrocenie_zycia,
+			obnizenie_jakosci = ch.obnizenie_jakosci,
+			czas_choroby = ch.czas_trwania,
+			srednia_dlugosc_zycia = 30,
+			plot_pyll = true,
+			plot_yld = true,
+			plot_choroba = false,
+			legend=nothing,
+			labels = false
+		)
+	end
+	zad7_plots = [
+		zad7_plotDALY_z_prawdopodobienstwem(zad7_przebiegi) for i in 1:54
+	]
+	plot(zad7_plots..., layout=(9,6), size=(900,900), xticks = nothing, yticks=nothing)
+end
+
+# ╔═╡ 26b096b4-eb9b-4e3c-8fea-9c7870a98485
+begin
+	zad7_pyll_sredni = sum([p.Przebieg.skrocenie_zycia * p.Czestosc for p in eachrow(zad7_przebiegi)])
+	zad7_yld_sredni = sum([yld(p.Przebieg) * p.Czestosc for p in eachrow(zad7_przebiegi)])
+	zad7_daly_sredni = zad7_pyll_sredni + zad7_yld_sredni
+	nothing
+end
+
+# ╔═╡ 155423f0-8ecd-43de-aa45-f9c142877178
+md"""
+Rozwiązanie: możemy to zadanie rozwiązać na dwa sposoby, populacyjnie lub z prawdopodobieństwa. 
+
+1. Możemy obliczyć średni PYLL i średnie YLD: 
+
+   PYLL łagodny * częstość łagodna + PYLL śmiertelny * częstość śmiertelna + PYLL powikłany * częstość powikłana = średnio $(zad7_pyll_sredni) lat
+
+
+2. Analogicznie obliczamy YLD:
+
+   YLD łagodny * częstość łagodna + YLD śmiertelny * częstość śmiertelna + YLD powikłany * częstość powikłana = średnio $(zad7_yld_sredni) lat
+
+3. Czyli średnie DALY wyniesie: YLD + PYLL = $(zad7_daly_sredni) lat
+
+
+"""
+
+# ╔═╡ e0c3d63b-f6c5-45b0-9a39-e203e6032cc2
+begin
+	zad7_daly_na_przebieg = [
+		daly(p.Przebieg) for p in eachrow(zad7_przebiegi)
+	]
+
+	zad7_daly_wazone = [
+		daly(p.Przebieg) * p.Czestosc for p in eachrow(zad7_przebiegi)
+	]
+
+	zad7_daly_suma = sum(zad7_daly_wazone)
+end
+
+# ╔═╡ 39e02898-d1cf-4a2c-9f3c-e83bef185b4e
+md"""
+Analogicznie możemy najpierw policzyć DALY każdej z postaci i przemnożyć razy częstość:
+
+- Łagodnej: $(zad7_daly_na_przebieg[1]) lat * $(zad7_przebiegi.Czestosc[1]) = $(round(zad7_daly_wazone[1],digits=1))
+- Śmiertelnej: $(zad7_daly_na_przebieg[2]) lat * $(zad7_przebiegi.Czestosc[2]) = $(round(zad7_daly_wazone[2],digits=1))
+- Powikłanej: $(zad7_daly_na_przebieg[3]) lat * $(zad7_przebiegi.Czestosc[3]) = $(round(zad7_daly_wazone[3],digits=1))
+
+Suma wyniesie: $(round(zad7_daly_suma,digits=1)) lat
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1497,5 +1603,12 @@ version = "0.9.1+5"
 # ╟─0a45afb4-877b-4d17-b494-434359a88964
 # ╠═00ff8ef6-411a-43ea-aed6-9f85f4fedeb3
 # ╠═30c07113-fe95-4d31-828a-3d01e090cb35
+# ╠═6f3fbc75-5581-4f09-a79f-f3476365839b
+# ╟─2e19b761-dcde-49dc-8a97-9eb369006943
+# ╠═f2cc6dca-95f6-4d6f-9d94-046e7c5c670f
+# ╠═26b096b4-eb9b-4e3c-8fea-9c7870a98485
+# ╟─155423f0-8ecd-43de-aa45-f9c142877178
+# ╠═e0c3d63b-f6c5-45b0-9a39-e203e6032cc2
+# ╠═39e02898-d1cf-4a2c-9f3c-e83bef185b4e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
