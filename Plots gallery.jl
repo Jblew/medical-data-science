@@ -90,12 +90,90 @@ md"""
 """
 
 # ╔═╡ 3c9f547d-33e1-4417-910c-0c21e9b1c079
-@gif for i in 1:50
-    plot(sin, 0, i * 2pi / 10)
+@gif for i in 1:100
+    plot(sin, 0, i * 2pi / 90)
 end when i > 30
+
+# @gif macro is simpler than animation - e.g. it currently does not allow specifying fps
+
+# ╔═╡ cb527a59-0f31-40af-b741-e32509dcedec
+md"""
+### 6. Named ticks in plot
+```
+yticks=([]::Vector{Number}, []::Vector{String})
+```
+First argument is a vector of values and the second one is a vector of labels.
+Eg.:
+```
+yticks=(
+	[0, 	  10,             20,       30],
+	["Zimno", "Umiarkowanie", "Ciepło", "Gorąco"],
+)
+```
+"""
+
+# ╔═╡ 2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
+begin
+	plotAliveOrDead = plot( 
+		[0,1,2,3,4],
+		[1,1,1,0,0];
+		opacity=1,
+		color=:green,
+		label="Życie człowieka",
+		legend=:topleft,
+		xlabel="Długość życia",
+		yticks=([0,1],["Martwy","Żywy"]),
+		ann=[(72.5, 50, text("Zdrowi", 10))]
+	)
+	# yticks
+end
+
+# ╔═╡ ed702cc8-a429-48e6-83fb-cbd5820ef9b3
+md"""
+### 7. How to check active Plots backend
+"""
 
 # ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 backend()
+
+# ╔═╡ 00ff0a2d-0826-4265-b665-9230054f2b41
+md"""
+### 8. Arrows on plots
+"""
+
+# ╔═╡ a52e07af-de11-4872-9e9d-19458222439b
+begin
+	plotJakosc = plot(
+		[0,   30,   78.58], [1.0, 1.0,  0.0  ],
+		seriestype=:line, linewidth = 3, linecolor = :red,
+	)
+	plot!(plotJakosc, 
+		[20,30], [0.8,1.0], arrow=(:closed, 2.0), color = :black, label=nothing,
+		ann=[(20,0.8, text("Zachorowanie"))]
+	)
+end
+
+# ╔═╡ e55ffedf-ee96-4050-ad01-acbfd553f559
+md"""
+### 9. Annotation text size and color on plots
+```
+text("Zachorowanie", 10, :blue)
+```
+
+Order of arguments for text constructor doesnt matter. Size is int, tilt is float
+"""
+
+# ╔═╡ f5e96dad-a9fa-4f5f-87fc-167326cdf191
+begin
+	plotWithAnnotation = plot(
+		[0,   30,   78.58], [1.0, 1.0,  0.0  ],
+		seriestype=:line, linewidth = 3, linecolor = :red,
+	)
+	plot!(plotWithAnnotation, 
+		[20,30], [0.8,1.0], arrow=(:closed, 2.0), color = :black, label=nothing,
+		ann=[(20,0.8, text("Zachorowanie", 10, :blue))]
+	)
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1307,6 +1385,13 @@ version = "0.9.1+5"
 # ╠═1abaf8fe-a443-45ff-b4c2-10e2abfa0051
 # ╟─65706696-12c5-442a-b61a-0f52f92498e6
 # ╠═3c9f547d-33e1-4417-910c-0c21e9b1c079
+# ╟─cb527a59-0f31-40af-b741-e32509dcedec
+# ╠═2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
+# ╟─ed702cc8-a429-48e6-83fb-cbd5820ef9b3
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
+# ╟─00ff0a2d-0826-4265-b665-9230054f2b41
+# ╠═a52e07af-de11-4872-9e9d-19458222439b
+# ╟─e55ffedf-ee96-4050-ad01-acbfd553f559
+# ╠═f5e96dad-a9fa-4f5f-87fc-167326cdf191
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
