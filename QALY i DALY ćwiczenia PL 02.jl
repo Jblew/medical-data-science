@@ -118,6 +118,27 @@ end
 
 
 # ╔═╡ bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
+begin
+	function plotDisabilityWeights(dfRaw)
+		df = transform(dfRaw, :Sequela => (sequelas -> [s[1:min(35,end)] for s in sequelas]) => :Sequela)
+		plot(
+			df.Sequela, df.DisabilityWeight;
+			seriestype=:bar, size=(700, 700),
+			xticks=(0.5:size(df.Sequela, 1), df.Sequela),
+			xrotation=70, seriescolor=reverse(ColorSchemes.gist_stern.colors)[80:end],
+		)
+	end
+	plotDisabilityWeights(disability_weights_sample_df)
+end
+
+# ╔═╡ c89c769e-21fc-431f-91c0-11304e3afec9
+md"""
+Tutaj informacja jak obliczano Disability Weights: [https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2019_daly-methods.pdf?sfvrsn=31b25009_7](https://cdn.who.int/media/docs/default-source/gho-documents/global-health-estimates/ghe2019_daly-methods.pdf?sfvrsn=31b25009_7). (stron nr 13)
+
+W 1990 roku badania bazowały na porównywaniu chorób przez ekspertów, natomiast od 2010 roku opierają się na ankietowaniu osób. Laikom przedstawia się standaryzowane opisy chorób 
+"""
+
+# ╔═╡ ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
 
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1362,5 +1383,7 @@ version = "0.9.1+5"
 # ╟─a6ab649f-b692-43c3-af43-1537b9006d07
 # ╠═d4d6f5d2-78e4-44cf-b53c-c9e16db1de9f
 # ╠═bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
+# ╟─c89c769e-21fc-431f-91c0-11304e3afec9
+# ╠═ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
