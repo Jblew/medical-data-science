@@ -5,7 +5,7 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ b685c2ae-7a35-11ec-2df7-1727256a91a5
-using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes
+using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes, Random, Dates
 
 # ╔═╡ e03e5d03-252c-42ed-a83a-2ea7d0b714fd
 md"""
@@ -84,15 +84,53 @@ begin
 	)
 end
 
+# ╔═╡ 592c9306-4399-4a3c-9469-efd8d44b5194
+md"""
+Jak widać życie jest skrócone tylko niecznanie, ale chory przeżył wiele lat w cierpieniu i jego życia nie można porównać do życia zdrowego człowieka.
+"""
+
+# ╔═╡ b37b08fa-58bc-4ebd-9790-e4319f654416
+md"""
+## Skąd wiadomo ile jakości życia ma pacjent?
+
+
+Ciekawe spostrzeżenie: poruszamy się na pograniczu medycyny i ekonomii w tym momencie. Ekonomia zajmuje się problemem wymienialności dóbr. W tym przypadku oczywiście pacjenci nie mogą zamienić się ze sobą chorobami, ale mogą porównać swoje doswiadczenia i przeprowadzić eksperyment myślowy i na tej podstawie stwierdzić czy woleliby mieć chorobę A czy chorobę B.
+
+Na tej podstawie można porównać ciężkość chorób i oszacować ich wpływ na zycie.
+
+Poniżej dane z Global Burden of Disease Study 2019 [http://ghdx.healthdata.org/record/ihme-data/gbd-2019-disability-weights](http://ghdx.healthdata.org/record/ihme-data/gbd-2019-disability-weights):
+"""
+
+# ╔═╡ a6ab649f-b692-43c3-af43-1537b9006d07
+	Random.seed!(Int(floor(Dates.datetime2unix(Dates.now()))))
+
+# ╔═╡ d4d6f5d2-78e4-44cf-b53c-c9e16db1de9f
+begin
+	disability_weights_df = DataFrame(CSV.File("QALY i DALY ćwiczenia PL/IHME_GBD_2019_DISABILITY_WEIGHTS_Y2020M010D15.csv"))
+	disability_weights_df = subset(disability_weights_df, :"Disability Weight" => dw -> dw .!= "--")
+	mapDisabilityWeightField(dwRaw) = parse(Float64, split(dwRaw, "\n")[1])
+	transform!(disability_weights_df, :"Disability Weight" => (dws -> [mapDisabilityWeightField(dw) for dw in dws]) => :DisabilityWeight)
+	disability_weights_df = subset(disability_weights_df, :DisabilityWeight => dw -> dw .> 0.15)
+
+	disability_weights_sample_df = disability_weights_df[rand(1:nrow(disability_weights_df),10),[:Sequela,:DisabilityWeight]]
+	sort!(disability_weights_sample_df, [:DisabilityWeight])
+end
+
+
+# ╔═╡ bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
+
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Query = "1a8c2f83-1ff3-5112-b086-8aa67b057ba1"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
 [compat]
@@ -1319,5 +1357,10 @@ version = "0.9.1+5"
 # ╠═02fcc6d5-7b73-4117-993d-9d1e872b7669
 # ╟─6f81f9ce-e8e3-4451-afd3-5a0201ce3ea3
 # ╠═1a8d6743-bc04-4dd7-ae4b-d6726289bd64
+# ╟─592c9306-4399-4a3c-9469-efd8d44b5194
+# ╟─b37b08fa-58bc-4ebd-9790-e4319f654416
+# ╟─a6ab649f-b692-43c3-af43-1537b9006d07
+# ╠═d4d6f5d2-78e4-44cf-b53c-c9e16db1de9f
+# ╠═bd4c2b01-f7dd-488e-a27d-9eaee5adeeb4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
