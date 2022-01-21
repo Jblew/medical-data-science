@@ -176,9 +176,6 @@ begin
 	"""
 end
 
-# ╔═╡ ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
-
-
 # ╔═╡ 547a4309-0541-475b-9086-6b9603c0c655
 md"""
 > **Zadanie 2.** Jakie procentowe obniżenie życia ma osoba chorująca na poniższe choroby:
@@ -207,6 +204,79 @@ begin
 	Odpowiedź do zadania nr 2: Zatem wynik wynosi $(exc2_d1) + $(exc2_d2) = $(exc2_sum)
 	"""
 end
+
+# ╔═╡ 647fd647-bdba-438e-b0d6-e637e5997829
+md"""
+Jakość życia dla danej choroby jest niejako uśredniana dla całego okresu jej trwania. Tak jak na poniższym wykresie:
+"""
+
+# ╔═╡ 8277676e-0065-45b9-bef6-63c961f08480
+begin
+	intervals(v) = [v[i] - v[i-1] for i in 2:length(v)]
+
+	function srednieObnizenie(lata,obnizenie)
+		odcinkiCzasu = intervals(lata)
+		sumaObnizenia = sum([odcinkiCzasu[i] * obnizenie[i] for i in 1:length(odcinkiCzasu)])
+		return sumaObnizenia/sum(odcinkiCzasu)
+	end
+	
+	function plotJakoscUsredniona()
+		jakoscZyciaZdrowego = DataFrame(
+			:Year    => [0,   78.58, 85 ], 
+			:Quality => [1.0, 0.0,   0.0 ],
+		)
+		obnizenieJakosciPrzezChorobe = DataFrame(
+			:Year =>        [0, 2,   5,   15,   20,  25,  30],
+			:QualityDrop => [0, 0.2, 0.1, 0.22, 0.35, 0.7, 1.0]
+		)
+		poczatekChorobyRok = 30
+		czasChoroby = obnizenieJakosciPrzezChorobe.Year[end]
+		wiekSmierc = poczatekChorobyRok + czasChoroby
+		
+		jakoscZyciaChorego = DataFrame(
+			:Year    => [0, (obnizenieJakosciPrzezChorobe.Year .+ poczatekChorobyRok)...,  78.58], 
+			:Quality => [1.0, (1.0 .- obnizenieJakosciPrzezChorobe.QualityDrop) ...,  0.0  ],
+		)
+		sredniaJakoscZyciaWChorobie = 1.0 - srednieObnizenie(obnizenieJakosciPrzezChorobe.Year, obnizenieJakosciPrzezChorobe.QualityDrop)
+
+		plotJakosc2 = plot(
+			jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+			label="Życie zdrowego człowieka",
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			seriestype=:steppost, linewidth = 3, linecolor = :green,
+			fill = (0, 0.5, :green),
+		)
+		plot!(plotJakosc2,
+			jakoscZyciaChorego.Year, jakoscZyciaChorego.Quality,
+			label="Życie chorego człowieka",
+			seriestype=:line, linewidth = 3, linecolor = :red,
+			fill = (0, 0.99, :darkred),
+		)
+		plot!(plotJakosc2, 
+			rectangle(poczatekChorobyRok, 0, czasChoroby, 1.0),
+			color = :white, opacity = 0.3, label=nothing
+		)
+		plot!(plotJakosc2, 
+			[25,jakoscZyciaChorego.Year[2]], [0.9,jakoscZyciaChorego.Quality[2]], arrow=(:closed, 2.0), color = :white, label=nothing,
+			ann=[(25,0.9, text("Zachorowanie", 8, :white))]
+		)
+		plot!(plotJakosc2, 
+			[62,wiekSmierc], [0.2,0.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+			ann=[(62,0.2, text("Śmierć", 8, :white))]
+		)
+		plot!(plotJakosc2, 
+			[0,85], [sredniaJakoscZyciaWChorobie, sredniaJakoscZyciaWChorobie],
+			seriestype=:line, color = :blue, w=3, label="Średnia jakość życia w chorobie",
+		)
+	end
+	plotJakoscUsredniona()
+end
+
+# ╔═╡ 95679cee-5fb2-4647-a610-90f935df5ec8
+
+
+# ╔═╡ 2cd1b920-e4df-4734-ac71-dd1b1d232730
+
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1456,11 +1526,14 @@ version = "0.9.1+5"
 # ╟─c89c769e-21fc-431f-91c0-11304e3afec9
 # ╟─5de1e2ef-b12e-4fce-9754-c061e928086f
 # ╟─fb463ae9-97f6-4a77-a83c-fe10ab3d0e85
-# ╠═ec56cf18-8bed-42a4-8b94-5f4ae9d23f7d
 # ╟─547a4309-0541-475b-9086-6b9603c0c655
 # ╟─3a6254e1-19f2-4853-975c-f36db1a889d9
 # ╟─462adef9-a939-4bdf-a580-7da55a9b58e8
 # ╟─5dec0dc5-0651-4f97-9194-6c230c930aaa
 # ╟─88eb64cf-10d7-4240-8bfe-aa6eb8c6d465
+# ╟─647fd647-bdba-438e-b0d6-e637e5997829
+# ╠═8277676e-0065-45b9-bef6-63c961f08480
+# ╠═95679cee-5fb2-4647-a610-90f935df5ec8
+# ╠═2cd1b920-e4df-4734-ac71-dd1b1d232730
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
