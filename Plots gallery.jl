@@ -143,18 +143,35 @@ md"""
 
 # ╔═╡ a52e07af-de11-4872-9e9d-19458222439b
 begin
-	jakoscZyciaChorego = DataFrame(
-		:Year    => [0,   30,   78.58], 
-		:Quality => [1.0, 1.0,  0.0  ],
-	)
-	
 	plotJakosc = plot(
-		jakoscZyciaChorego.Year, jakoscZyciaChorego.Quality,
+		[0,   30,   78.58], [1.0, 1.0,  0.0  ],
 		seriestype=:line, linewidth = 3, linecolor = :red,
 	)
 	plot!(plotJakosc, 
 		[20,30], [0.8,1.0], arrow=(:closed, 2.0), color = :black, label=nothing,
 		ann=[(20,0.8, text("Zachorowanie"))]
+	)
+end
+
+# ╔═╡ e55ffedf-ee96-4050-ad01-acbfd553f559
+md"""
+### 9. Annotation text size and color on plots
+```
+text("Zachorowanie", 10, :blue)
+```
+
+Order of arguments for text constructor doesnt matter. Size is int, tilt is float
+"""
+
+# ╔═╡ f5e96dad-a9fa-4f5f-87fc-167326cdf191
+begin
+	plotWithAnnotation = plot(
+		[0,   30,   78.58], [1.0, 1.0,  0.0  ],
+		seriestype=:line, linewidth = 3, linecolor = :red,
+	)
+	plot!(plotWithAnnotation, 
+		[20,30], [0.8,1.0], arrow=(:closed, 2.0), color = :black, label=nothing,
+		ann=[(20,0.8, text("Zachorowanie", 10, :blue))]
 	)
 end
 
@@ -1374,5 +1391,7 @@ version = "0.9.1+5"
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 # ╟─00ff0a2d-0826-4265-b665-9230054f2b41
 # ╠═a52e07af-de11-4872-9e9d-19458222439b
+# ╟─e55ffedf-ee96-4050-ad01-acbfd553f559
+# ╠═f5e96dad-a9fa-4f5f-87fc-167326cdf191
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
