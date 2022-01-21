@@ -129,7 +129,9 @@ begin
 end
 
 # ╔═╡ ed702cc8-a429-48e6-83fb-cbd5820ef9b3
-
+md"""
+### 7. How to check active Plots backend
+"""
 
 # ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 backend()
@@ -1346,7 +1348,7 @@ version = "0.9.1+5"
 # ╠═3c9f547d-33e1-4417-910c-0c21e9b1c079
 # ╟─cb527a59-0f31-40af-b741-e32509dcedec
 # ╠═2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
-# ╠═ed702cc8-a429-48e6-83fb-cbd5820ef9b3
+# ╟─ed702cc8-a429-48e6-83fb-cbd5820ef9b3
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
