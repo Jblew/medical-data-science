@@ -90,9 +90,46 @@ md"""
 """
 
 # ╔═╡ 3c9f547d-33e1-4417-910c-0c21e9b1c079
-@gif for i in 1:50
-    plot(sin, 0, i * 2pi / 10)
+@gif for i in 1:100
+    plot(sin, 0, i * 2pi / 90)
 end when i > 30
+
+# @gif macro is simpler than animation - e.g. it currently does not allow specifying fps
+
+# ╔═╡ cb527a59-0f31-40af-b741-e32509dcedec
+md"""
+### 6. Named ticks in plot
+```
+yticks=([]::Vector{Number}, []::Vector{String})
+```
+First argument is a vector of values and the second one is a vector of labels.
+Eg.:
+```
+yticks=(
+	[0, 	  10,             20,       30],
+	["Zimno", "Umiarkowanie", "Ciepło", "Gorąco"],
+)
+```
+"""
+
+# ╔═╡ 2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
+begin
+	plotAliveOrDead = plot( 
+		[0,1,2,3,4],
+		[1,1,1,0,0];
+		opacity=1,
+		color=:green,
+		label="Życie człowieka",
+		legend=:topleft,
+		xlabel="Długość życia",
+		yticks=([0,1],["Martwy","Żywy"]),
+		ann=[(72.5, 50, text("Zdrowi", 10))]
+	)
+	# yticks
+end
+
+# ╔═╡ ed702cc8-a429-48e6-83fb-cbd5820ef9b3
+
 
 # ╔═╡ 4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 backend()
@@ -1307,6 +1344,9 @@ version = "0.9.1+5"
 # ╠═1abaf8fe-a443-45ff-b4c2-10e2abfa0051
 # ╟─65706696-12c5-442a-b61a-0f52f92498e6
 # ╠═3c9f547d-33e1-4417-910c-0c21e9b1c079
+# ╟─cb527a59-0f31-40af-b741-e32509dcedec
+# ╠═2211d2d4-87c8-4ed1-99bc-6b48a6f37c22
+# ╠═ed702cc8-a429-48e6-83fb-cbd5820ef9b3
 # ╠═4595f474-a1d5-4d8b-aade-c4f6368ab4c4
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
