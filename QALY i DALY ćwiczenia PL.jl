@@ -7,6 +7,12 @@ using InteractiveUtils
 # ╔═╡ 8742a194-eed3-4d09-8b27-589ff87f252a
 using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes
 
+# ╔═╡ e17cd239-0d1c-4204-a2c1-e7ca9333a8dc
+html"""<style>
+pluto-output {    font-size: 1.2em;   }
+pluto-input .cm-content { font-size: 0.9em !important; }
+"""
+
 # ╔═╡ 23865c42-786a-11ec-348c-9798e115cc72
 md"""
 # QALY i DALY — ekonomiczna ocena usług zdrowotnych. Częsć 01
@@ -1471,6 +1477,7 @@ version = "0.9.1+5"
 """
 
 # ╔═╡ Cell order:
+# ╠═e17cd239-0d1c-4204-a2c1-e7ca9333a8dc
 # ╠═8742a194-eed3-4d09-8b27-589ff87f252a
 # ╟─23865c42-786a-11ec-348c-9798e115cc72
 # ╟─d5ad0de5-bb80-423a-817b-ad72c4aeb3cb

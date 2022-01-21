@@ -327,6 +327,82 @@ Czyli średnio przez okres trwania choroba obniża jakość życia o $zad3_sredn
 
 """
 
+# ╔═╡ 82de68a5-58a6-4f43-ab69-a35652002311
+md"""
+Samo średnie obniżenie jakości życia jeszcze niewiele nam mówi, nie pozwala bowiem porównać chorób ostrych i przewlekłych.
+
+**Zadanie 4.** Co jest gorsze? Złamanie nogi, które spowoduje 40% utraty jakości życia przez jeden rok, czy epizod nadczynności tarczycy, który spowoduje utratę 15% jakości życia przez 3 lata?
+"""
+
+# ╔═╡ 74c8d1b0-c0f2-4074-9c03-61f3a438d8ab
+md"""
+Całe szczęście, że utrata jakości życia jest wartością bezwymiarową (procent). To pozwala nam przemnożyć ją przez dowolną wartość obdarzoną jednostką i nadal pozostawić jednostkę. W tym wypadku lata
+"""
+
+# ╔═╡ bb1bca55-df59-4c7a-bc4e-29f0718d4842
+md"""
+Aby porównać te dwie choroby wystarczy przemnożyć czas razy procentową utratę jakości życia, czyli:
+
+- 40% * 1 rok = 0,4roku = 4,8 miesiąca
+- 15% * 3 lata = 0,45 roku = 5,4 miesiąca
+"""
+
+# ╔═╡ ed3c2f42-ec1e-48f8-8e75-3ae66127b00d
+md"""
+Jak to rozumieć? Procentowa utrata jakości wyraża, że utrata 15% jakości życia przez 3 lata jest równa skróceniu życia o 5 miesięcy i 12 dni...
+"""
+
+# ╔═╡ 444b8f0b-54b3-45ae-8132-0b7cde793ced
+begin
+	function plotPorownanieChorob()
+		zlamanie_lata = 1
+		zlamanie_utrata_jakosci = 0.4
+		nadczynnosc_lata = 3
+		nadczynnosc_utrata_jakosci = 0.15
+
+		jakoscZyciaZdrowego = DataFrame(
+			:Year    => [0,   8 ], 
+			:Quality => [1.0, 1.0],
+		)
+		
+		p = plot(
+			jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+			label="Życie zdrowego człowieka",
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			seriestype=:steppost, linewidth = 3, linecolor = :green,
+			fill = (0, 0.5, :green),
+		)
+
+		plot!(p,
+			rectangle(0, 1-zlamanie_utrata_jakosci,zlamanie_lata,zlamanie_utrata_jakosci),
+			color=:yellow, label=nothing,
+			ann=[
+				(zlamanie_lata/2, (1-zlamanie_utrata_jakosci/2), text("Złamanie",7))
+			]
+		)
+
+		plot!(p,
+			rectangle(zlamanie_lata, 1-nadczynnosc_utrata_jakosci,nadczynnosc_lata,nadczynnosc_utrata_jakosci),
+			color=:orange, label=nothing,
+			ann=[(
+					zlamanie_lata + nadczynnosc_lata/2, 
+					(1-nadczynnosc_utrata_jakosci/2), 
+					text("Nadczynność\ntarczycy",7)
+				)]
+		)
+		
+		p
+	end
+
+	plotPorownanieChorob()
+	
+end
+
+# ╔═╡ de2d4f4c-4ac8-40bf-ae4c-7c1c9aaeb01b
+md"""
+Widać na powyższym wykresie, która wartość ma większe pole powierzchni
+"""
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1588,5 +1664,11 @@ version = "0.9.1+5"
 # ╟─50694015-e30f-4b15-9727-c7fb58b38640
 # ╠═83a2f2d6-f902-4e1c-8d3f-9f3637aa4209
 # ╠═399f7b6c-3926-4adc-8c41-08269489f65f
+# ╟─82de68a5-58a6-4f43-ab69-a35652002311
+# ╟─74c8d1b0-c0f2-4074-9c03-61f3a438d8ab
+# ╟─bb1bca55-df59-4c7a-bc4e-29f0718d4842
+# ╟─ed3c2f42-ec1e-48f8-8e75-3ae66127b00d
+# ╠═444b8f0b-54b3-45ae-8132-0b7cde793ced
+# ╟─de2d4f4c-4ac8-40bf-ae4c-7c1c9aaeb01b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
