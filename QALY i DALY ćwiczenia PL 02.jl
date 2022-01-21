@@ -42,32 +42,46 @@ md"""
 A co gdybyśmy dodali do tego jakość życia, aby odzwierciedlić negatywny wpływ choroby jeszcze w momencie, kiedy chory żyje
 """
 
-# ╔═╡ 2fa3fb65-6d7d-401e-b150-dea40157403f
-begin
-	qol_in_time = DataFrame(
-		:Year    => [0,   20,   40,   50,   60,   70,  75,  77,   78.58, 100 ], 
-		:Quality => [1.0, 0.95, 0.9,  0.85, 0.80, 0.4, 0.0, 0.0,  0.0,   0.0 ],
-	)
-	nothing
-end
-
 # ╔═╡ 1a8d6743-bc04-4dd7-ae4b-d6726289bd64
 begin
-	function plotQALY(; years::Vector{Float64}=[], quality::Vector{Float64}=[])
-		plot(
-			years, quality,
-			title="Jakość życia",
-			seriestype=:steppost, 
-			w=3, fill = (0, 0.2, :red), 
-			xlabel="Lata życia", ylabel="Jakość życia [%]",
-			ann=[
-				(30, 0.5, "QALY"),
-				(80, 0.7, "DALY"),
-			]
-		)
-	end
-
-	plotQALY(years=qol_in_time.Year, quality=qol_in_time.Quality)
+	jakoscZyciaZdrowego = DataFrame(
+		:Year    => [0,   78.58, 85 ], 
+		:Quality => [1.0, 0.0,   0.0 ],
+	)
+	jakoscZyciaChorego = DataFrame(
+		:Year    => [0,   30,   35,  39,   45,   60,   70,  77,   78.58], 
+		:Quality => [1.0, 1.0,  0.8, 0.85, 0.8,  0.75, 0.4, 0.0,  0.0  ],
+	)
+	
+	plotJakosc = plot(
+		jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+		label="Życie zdrowego człowieka",
+		xlabel="Lata życia", ylabel="Jakość życia [%]",
+		seriestype=:steppost, linewidth = 3, linecolor = :green,
+		fill = (0, 0.5, :green),
+	)
+	plot!(plotJakosc,
+		jakoscZyciaChorego.Year, jakoscZyciaChorego.Quality,
+		label="Życie chorego człowieka",
+		seriestype=:line, linewidth = 3, linecolor = :red,
+		fill = (0, 0.99, :darkred),
+	)
+	plot!(plotJakosc, 
+		[25,30], [0.9,1.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(25,0.9, text("Zachorowanie", 8, :white))]
+	)
+	plot!(plotJakosc, 
+		[34,39], [0.7,0.85], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(34,0.7, text("Poprawa\npo leczeniu", 8, :white))]
+	)
+	plot!(plotJakosc, 
+		[55,60], [0.6,0.75], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(55,0.6, text("Wyczerpanie\nmechanizmów\nkompensujących", 8, :white))]
+	)
+	plot!(plotJakosc, 
+		[62,77], [0.2,0.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(62,0.2, text("Niecznacznie\nprzedwczesna\nśmierć", 8, :white))]
+	)
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1304,7 +1318,6 @@ version = "0.9.1+5"
 # ╟─4cbe161f-1799-4f62-afa0-0fab26e172af
 # ╠═02fcc6d5-7b73-4117-993d-9d1e872b7669
 # ╟─6f81f9ce-e8e3-4451-afd3-5a0201ce3ea3
-# ╠═2fa3fb65-6d7d-401e-b150-dea40157403f
 # ╠═1a8d6743-bc04-4dd7-ae4b-d6726289bd64
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
