@@ -214,27 +214,22 @@ Jakość życia dla danej choroby jest niejako uśredniana dla całego okresu je
 begin
 	intervals(v) = [v[i] - v[i-1] for i in 2:length(v)]
 
-	function srednieObnizenie(lata,obnizenie)
+	function srednieObnizenie(lata, obnizenie)
 		odcinkiCzasu = intervals(lata)
 		sumaObnizenia = sum([odcinkiCzasu[i] * obnizenie[i] for i in 1:length(odcinkiCzasu)])
 		return sumaObnizenia/sum(odcinkiCzasu)
 	end
 	
-	function plotJakoscUsredniona()
+	function plotJakoscUsredniona(obnizenieJakosciPrzezChorobe::DataFrame;poczatekChoroby::Int,rysujSrednia::Bool=false)
 		jakoscZyciaZdrowego = DataFrame(
 			:Year    => [0,   78.58, 85 ], 
 			:Quality => [1.0, 0.0,   0.0 ],
 		)
-		obnizenieJakosciPrzezChorobe = DataFrame(
-			:Year =>        [0, 2,   5,   15,   20,  25,  30],
-			:QualityDrop => [0, 0.2, 0.1, 0.22, 0.35, 0.7, 1.0]
-		)
-		poczatekChorobyRok = 30
 		czasChoroby = obnizenieJakosciPrzezChorobe.Year[end]
-		wiekSmierc = poczatekChorobyRok + czasChoroby
+		wiekSmierc = poczatekChoroby + czasChoroby
 		
 		jakoscZyciaChorego = DataFrame(
-			:Year    => [0, (obnizenieJakosciPrzezChorobe.Year .+ poczatekChorobyRok)...,  78.58], 
+			:Year    => [0, (obnizenieJakosciPrzezChorobe.Year .+ poczatekChoroby)...,  78.58], 
 			:Quality => [1.0, (1.0 .- obnizenieJakosciPrzezChorobe.QualityDrop) ...,  0.0  ],
 		)
 		sredniaJakoscZyciaWChorobie = 1.0 - srednieObnizenie(obnizenieJakosciPrzezChorobe.Year, obnizenieJakosciPrzezChorobe.QualityDrop)
@@ -253,7 +248,7 @@ begin
 			fill = (0, 0.99, :darkred),
 		)
 		plot!(plotJakosc2, 
-			rectangle(poczatekChorobyRok, 0, czasChoroby, 1.0),
+			rectangle(poczatekChoroby, 0, czasChoroby, 1.0),
 			color = :white, opacity = 0.3, label=nothing
 		)
 		plot!(plotJakosc2, 
@@ -264,19 +259,73 @@ begin
 			[62,wiekSmierc], [0.2,0.0], arrow=(:closed, 2.0), color = :white, label=nothing,
 			ann=[(62,0.2, text("Śmierć", 8, :white))]
 		)
-		plot!(plotJakosc2, 
-			[0,85], [sredniaJakoscZyciaWChorobie, sredniaJakoscZyciaWChorobie],
-			seriestype=:line, color = :blue, w=3, label="Średnia jakość życia w chorobie",
-		)
+		if rysujSrednia
+			plot!(plotJakosc2, 
+				[0,85], [sredniaJakoscZyciaWChorobie, sredniaJakoscZyciaWChorobie],
+				seriestype=:line, color = :blue, w=3, label="Średnia jakość życia w chorobie",
+			)
+		end
+		plotJakosc2
 	end
-	plotJakoscUsredniona()
+
+	choroba1_obnizenieJakosci = DataFrame(
+			:Year =>        [0, 2,   5,   15,   20,  25,  30],
+			:QualityDrop => [0, 0.2, 0.1, 0.22, 0.35, 0.7, 1.0]
+		)
+	plotJakoscUsredniona(choroba1_obnizenieJakosci, poczatekChoroby=25, rysujSrednia=true)
 end
 
-# ╔═╡ 95679cee-5fb2-4647-a610-90f935df5ec8
+# ╔═╡ bbfa7f78-0104-4565-be14-3ba33a95061b
 
+
+# ╔═╡ 95679cee-5fb2-4647-a610-90f935df5ec8
+begin
+	zad3_obnizeniePrzezChorobe = DataFrame(
+		:Year => [0, 9, 12, 20],
+		:QualityDrop => [0.05, 0.25, 0.5, 1.0],
+	)
+	zad3_dlugoscChoroby = zad3_obnizeniePrzezChorobe.Year[end]
+	zad3_odcinki=intervals(zad3_obnizeniePrzezChorobe.Year)
+	zad3_procentoweObnizenie=[Int(floor(drop*100)) for drop in zad3_obnizeniePrzezChorobe.QualityDrop]
+	zad3_iloczyny = [zad3_procentoweObnizenie[i] * zad3_odcinki[i] for i in 1:length(zad3_odcinki)]
+	zad3_suma_iloczynow = sum(zad3_iloczyny)
+	zad3_srednia = zad3_suma_iloczynow / zad3_dlugoscChoroby
+	nothing
+end
 
 # ╔═╡ 2cd1b920-e4df-4734-ac71-dd1b1d232730
+md"""
+**Zadanie 3.** O ile średnio obniża jakość życia choroba, która trwa $zad3_dlugoscChoroby lat, przez pierwsze $(zad3_odcinki[1]) lat jakość jest obniżona o $(zad3_procentoweObnizenie[1]) %, przez kolejne $(zad3_odcinki[2]) lata o $(zad3_procentoweObnizenie[2]) %, a przez ostatnie $(zad3_odcinki[3]) lat o $(zad3_procentoweObnizenie[3]) % ?
+"""
 
+# ╔═╡ 50694015-e30f-4b15-9727-c7fb58b38640
+md"""
+Rozwiązanie na wykresie:
+"""
+
+# ╔═╡ 83a2f2d6-f902-4e1c-8d3f-9f3637aa4209
+plotJakoscUsredniona(zad3_obnizeniePrzezChorobe, poczatekChoroby=25, rysujSrednia=false)
+
+# ╔═╡ 399f7b6c-3926-4adc-8c41-08269489f65f
+md"""
+Rozwiązanie:
+1. Mnożymy utratę zdrowia razy ilość lat dla wszystkich interwałów:
+   
+    $(zad3_odcinki[1]) lat * $(zad3_procentoweObnizenie[1]) % = $(zad3_iloczyny[1]); 
+   
+    $(zad3_odcinki[2]) lat * $(zad3_procentoweObnizenie[2]) % = $(zad3_iloczyny[2]); 
+
+    $(zad3_odcinki[3]) lat * $(zad3_procentoweObnizenie[3]) % = $(zad3_iloczyny[3]); 
+
+    W sumie: $zad3_suma_iloczynow
+
+2. Dzielimy to przez sumę lat, czyli długość choroby czyli $zad3_dlugoscChoroby lat
+
+    $zad3_suma_iloczynow / $zad3_dlugoscChoroby = $zad3_srednia %
+
+Czyli średnio przez okres trwania choroba obniża jakość życia o $zad3_srednia %
+
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1533,7 +1582,11 @@ version = "0.9.1+5"
 # ╟─88eb64cf-10d7-4240-8bfe-aa6eb8c6d465
 # ╟─647fd647-bdba-438e-b0d6-e637e5997829
 # ╠═8277676e-0065-45b9-bef6-63c961f08480
+# ╠═bbfa7f78-0104-4565-be14-3ba33a95061b
 # ╠═95679cee-5fb2-4647-a610-90f935df5ec8
 # ╠═2cd1b920-e4df-4734-ac71-dd1b1d232730
+# ╟─50694015-e30f-4b15-9727-c7fb58b38640
+# ╠═83a2f2d6-f902-4e1c-8d3f-9f3637aa4209
+# ╠═399f7b6c-3926-4adc-8c41-08269489f65f
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
