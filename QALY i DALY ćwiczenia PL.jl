@@ -142,7 +142,7 @@ begin
 	no_healthy = population - no_patients
 	
 	# If we calculate PYLL of this disease compared to healthy majority
-	pyll_of_disease = (life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease) * no_patients
+	pyll_of_disease = years_lost_from_the_disease * no_patients
 
 	# And now total PYLL taking that people die either naturally (healthy) or from this disease
 	patient_life_expectancy = life_expectancy_at_birth_of_healthy_person - years_lost_from_the_disease
@@ -1492,8 +1492,8 @@ version = "0.9.1+5"
 # ╟─5bb8e383-fdb4-48de-9047-8dda51b4e437
 # ╟─1e2d413e-c98a-40f0-9580-d40fc5596a63
 # ╟─28d2b3be-58cf-4e1d-a493-40942324bca7
-# ╟─b997783e-332a-408c-b3a7-1415ad56070b
-# ╟─0af7a0a9-04f0-41c9-be8b-ad23b83076cd
+# ╠═b997783e-332a-408c-b3a7-1415ad56070b
+# ╠═0af7a0a9-04f0-41c9-be8b-ad23b83076cd
 # ╟─230e29ba-d01d-4626-92c5-590bdf33b514
 # ╟─f3fb6d19-6bfb-4215-9fec-867a88e978e2
 # ╟─80ad0c49-5ccf-4aea-a5f1-0a2fcd1ad876
