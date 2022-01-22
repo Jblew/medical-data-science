@@ -352,6 +352,101 @@ Analogicznie możemy najpierw policzyć DALY każdej z postaci i przemnożyć ra
 Suma wyniesie: $(round(zad7_daly_suma,digits=1)) lat
 """
 
+# ╔═╡ 08e05b49-e4c6-45b3-83e7-289292b96636
+begin
+	jakoscZyciaZdrowego = DataFrame(
+		:Year    => [0,   78.58, 85 ], 
+		:Quality => [1.0, 0.0,   0.0 ],
+	)
+	jakoscZyciaNieleczonego = DataFrame(
+		:Year    => [0,   30,   35,                    55,   77,   78.58], 
+		:Quality => [1.0, 1.0,  0.8,                   0.55, 0.0,  0.0  ],
+	)
+	jakoscZyciaLeczonego = DataFrame(
+		:Year    => [0,   30,   35,  39,   45,   60,   70,  77,   78.58], 
+		:Quality => [1.0, 1.0,  0.8, 0.85, 0.8,  0.75, 0.4, 0.0,  0.0  ],
+	)
+	
+	plotJakosc = plot(
+		jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+		label="Życie zdrowego człowieka",
+		xlabel="Lata życia", ylabel="Jakość życia [%]",
+		seriestype=:steppost, linewidth = 3, linecolor = :green,
+		fill = (0, 0.5, :green),
+	)
+	plot!(plotJakosc,
+		jakoscZyciaLeczonego.Year, jakoscZyciaLeczonego.Quality,
+		label="Życie leczonego człowieka",
+		seriestype=:line, linewidth = 3, linecolor = :orange,
+		fill = (0, 0.99, :darkorange),
+	)
+	plot!(plotJakosc,
+		jakoscZyciaNieleczonego.Year, jakoscZyciaNieleczonego.Quality,
+		label="Życie nieleczonego człowieka",
+		seriestype=:line, linewidth = 3, linecolor = :red,
+		fill = (0, 0.99, :darkred),
+	)
+	plot!(plotJakosc, 
+		[25,30], [0.9,1.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(25,0.9, text("Zachorowanie", 8, :white))]
+	)
+	plot!(plotJakosc, 
+		[34,39], [0.7,0.85], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(34,0.7, text("Poprawa\npo leczeniu", 8, :white))]
+	)
+	plot!(plotJakosc, 
+		[62,77], [0.2,0.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+		ann=[(62,0.2, text("Niecznacznie\nprzedwczesna\nśmierć", 8, :white))]
+	)
+end
+
+# ╔═╡ 1ef53516-d25c-467e-af04-a15580aa3f4b
+begin
+	function leczenieSkracaPlot()
+		jakoscZyciaZdrowego = DataFrame(
+			:Year    => [0,   78.58, 85 ], 
+			:Quality => [1.0, 0.0,   0.0 ],
+		)
+		jakoscZyciaNieleczonego = DataFrame(
+			:Year    => [0,   30,   35,                    55,   77,   78.58], 
+			:Quality => [1.0, 1.0,  0.8,                   0.55, 0.0,  0.0  ],
+		)
+		jakoscZyciaLeczonego = DataFrame(
+			:Year    => [0,   30,   35,  39,   45,   60,   70,  77,   78.58], 
+			:Quality => [1.0, 1.0,  0.8, 0.85, 0.8,  0.75, 0.0, 0.0,  0.0  ],
+		)
+		
+		plotJakosc = plot(
+			jakoscZyciaZdrowego.Year, jakoscZyciaZdrowego.Quality,
+			label="Życie zdrowego człowieka",
+			xlabel="Lata życia", ylabel="Jakość życia [%]",
+			seriestype=:steppost, linewidth = 3, linecolor = :green,
+			fill = (0, 0.5, :green),
+		)
+		plot!(plotJakosc,
+			jakoscZyciaLeczonego.Year, jakoscZyciaLeczonego.Quality,
+			label="Życie leczonego człowieka",
+			seriestype=:line, linewidth = 3, linecolor = :orange,
+			fill = (0, 0.99, :darkorange),
+		)
+		plot!(plotJakosc,
+			jakoscZyciaNieleczonego.Year, jakoscZyciaNieleczonego.Quality,
+			label="Życie nieleczonego człowieka",
+			seriestype=:line, linewidth = 3, linecolor = :red,
+			fill = (0, 0.5, :darkred),
+		)
+		plot!(plotJakosc, 
+			[25,30], [0.9,1.0], arrow=(:closed, 2.0), color = :white, label=nothing,
+			ann=[(25,0.9, text("Zachorowanie", 8, :white))]
+		)
+		plot!(plotJakosc, 
+			[34,39], [0.7,0.85], arrow=(:closed, 2.0), color = :white, label=nothing,
+			ann=[(34,0.7, text("Poprawa\npo leczeniu", 8, :white))]
+		)
+	end
+	leczenieSkracaPlot()
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -1610,5 +1705,7 @@ version = "0.9.1+5"
 # ╠═155423f0-8ecd-43de-aa45-f9c142877178
 # ╠═e0c3d63b-f6c5-45b0-9a39-e203e6032cc2
 # ╠═39e02898-d1cf-4a2c-9f3c-e83bef185b4e
+# ╠═08e05b49-e4c6-45b3-83e7-289292b96636
+# ╠═1ef53516-d25c-467e-af04-a15580aa3f4b
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
