@@ -5,7 +5,7 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ 51dfc4a3-d921-4bfb-90fe-4c46f71262b6
-using Plots, StatsPlots, DataFrames, PlutoUI, CSV, Query, ColorSchemes, Random, Dates, StatsBase
+using Plots, StatsPlots, DataFrames, CSV, Query, ColorSchemes, Random, Dates, StatsBase
 
 # ╔═╡ 5e70c04a-7aea-11ec-1954-c1abedfba9b1
 html"""<style>
@@ -1701,9 +1701,9 @@ version = "1.6.38+0"
 
 [[deps.libvorbis_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Ogg_jll", "Pkg"]
-git-tree-sha1 = "c45f4e40e7aafe9d086379e5578947ec8b95a8fb"
+git-tree-sha1 = "b910cb81ef3fe6e78bf6acee440bda86fd6ae00c"
 uuid = "f27f6e37-5d2b-51aa-960f-b287f2bc3b7a"
-version = "1.3.7+0"
+version = "1.3.7+1"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
