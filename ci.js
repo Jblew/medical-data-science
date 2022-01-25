@@ -1,14 +1,14 @@
 const fs = require("fs");
 
-export function getNotebookDirs() {
-  const notebooks_path = "notebooks";
+function getNotebookDirs() {
+  const notebooks_path = fs.realpathSync(`${__dirname}/notebooks`);
   return fs
     .readdirSync(notebooks_path)
     .map((name) => `${notebooks_path}/${name}`)
     .filter((path) => fs.lstatSync(path).isDirectory());
 }
 
-export function getVersion(notebookDir) {
+function getVersion(notebookDir) {
   const projectFilePath = `${notebookDir}/Project.toml`;
   if (!fs.existsSync(projectFilePath))
     throw new Error(`File ${projectFilePath} does not exist`);
@@ -24,7 +24,7 @@ export function getVersion(notebookDir) {
 }
 
 function getNotebookName(notebookDir) {
-  return notebookDir.split("/").pop();
+  return notebookDir.split("/").pop().toLowerCase();
 }
 
 function getPackageBaseName(notebookDir, { context }) {
@@ -32,7 +32,7 @@ function getPackageBaseName(notebookDir, { context }) {
   return `${context.repo.repo}-${notebookName}`.toLowerCase();
 }
 
-export function getPackageName(notebookDir, { context }) {
+function getPackageName(notebookDir, { context }) {
   const notebookName = getPackageBaseName(notebookDir, { context });
   return `${context.repo.owner}/${notebookName}`.toLowerCase();
 }
@@ -83,7 +83,7 @@ async function shouldBuildNoFail(notebookDir, { github, context }) {
   }
 }
 
-export async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
+async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
   const notebookDirs = getNotebookDirs();
   const shouldBuildResults = await Promise.all(
     notebookDirs.map((notebookDir) =>
@@ -92,3 +92,11 @@ export async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
   );
   return notebookDirs.filter((_, index) => shouldBuildResults[index]);
 }
+
+module.exports = {
+  getNotebookName,
+  getNotebookDirsThatShouldBeBuilt,
+  getPackageName,
+  getVersion,
+  getNotebookDirs,
+};
