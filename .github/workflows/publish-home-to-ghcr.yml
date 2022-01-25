@@ -8,6 +8,9 @@ name: Create and publish home Docker image to ghcr.io
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'home/**'
+      - '.github/workflows/publish-home-to-ghcr.yml'
 
 env:
   REGISTRY: ghcr.io

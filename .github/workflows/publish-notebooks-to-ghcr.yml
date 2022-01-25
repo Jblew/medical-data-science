@@ -3,6 +3,9 @@ name: Create and publish a all notebooks as Docker images to ghcr.io
 on:
   push:
     branches: ["main"]
+    paths:
+      - 'notebooks/**'
+      - '.github/workflows/publish-notebooks-to-ghcr.yml'
 
 env:
   REGISTRY: ghcr.io
