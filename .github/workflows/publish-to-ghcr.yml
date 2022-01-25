@@ -33,7 +33,7 @@ jobs:
             )
             const output = JSON.stringify(notebookDirsForBuilding)
             console.log(`'${output}'\n`)
-            console.log(`::set-output name=notebooks::'${output}'`)
+            console.log(`::set-output name=notebooks::${output}`)
   
   build:
     runs-on: ubuntu-latest
