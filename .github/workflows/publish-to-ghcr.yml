@@ -63,9 +63,10 @@ jobs:
           script: |
             const { getPackageName } = require(".github/workflows/utils.js")
             const packageName = getPackageName(process.env.NOTEBOOK_DIR)
-            console.log('Package name:', packageName)
+            const baseTag = `${process.env.REGISTRY}/${packageName}`
+            console.log('Package name:', baseTag)
             const tags = [
-              `${packageName}:latest`
+              `${baseTag}:latest`
             ]
             console.log('Tags:', tags)
             console.log(`::set-output name=tags::${tags.join(".")}`)

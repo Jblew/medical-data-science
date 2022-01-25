@@ -31,7 +31,7 @@ function getNotebookName(notebookDir) {
 
 function getPackageName(notebookDir) {
   const notebookName = getNotebookName(notebookDir);
-  return `${process.env.IMAGE_NAME_BASE}/${notebookName}`.toLowerCase();
+  return `${process.env.IMAGE_NAME_BASE}-${notebookName}`.toLowerCase();
 }
 
 async function shouldBuild(notebookDir, { github }) {
