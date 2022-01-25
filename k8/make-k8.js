@@ -3,6 +3,8 @@ const {
   getVersion,
   getNotebookName,
   getPackageName,
+  getHomeVersion,
+  getHomePackageName,
 } = require("../ci.js");
 const fs = require("fs");
 
@@ -14,9 +16,14 @@ function makeK8ConfigFiles({context}) {
       flag: "w",
     });
     for (const notebookDir of notebookDirs) {
-        const f = `${k8OutDir}/service-${getNotebookName(notebookDir)}.yml`
-        fs.writeFileSync(f, makeServiceConfig(notebookDir, {context}),{flag: "w"});
+      const f = `${k8OutDir}/service-${getNotebookName(notebookDir)}.yml`
+      const serviceConfig = makeServiceConfigForNotebook(notebookDir, {
+        context,
+      });
+        fs.writeFileSync(f, serviceConfig, {flag: "w"});
     }
+  const serviceConfigForHome = makeServiceConfigForHome({ context });
+  fs.writeFileSync(`${k8OutDir}/service-home.yml`, serviceConfigForHome, { flag: "w" });
 }
 
 function makeIngressConfig(notebookDirs) {
@@ -36,7 +43,9 @@ spec:
     - host: medicaldatascience.jblewandowski.com
       http:
         paths:
-          ${notebookDirs.map((notebookDir) => `
+          ${notebookDirs
+            .map(
+              (notebookDir) => `
           - path: "/notebooks/${getNotebookName(notebookDir)}"
             pathType: Prefix
             backend:
@@ -47,6 +56,13 @@ spec:
           `
             )
             .join("\n")}
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: home
+                port:
+                  number: 80
   tls:
     - hosts:
         - medicaldatascience.jblewandowski.com
@@ -54,10 +70,20 @@ spec:
     `;
 }
 
-function makeServiceConfig(notebookDir, { context }) {
+function makeServiceConfigForNotebook(notebookDir, { context }) {
     const serviceName = getNotebookServiceName(notebookDir)
     const imageTag = `ghcr.io/${getPackageName(notebookDir, {context})}:${getVersion(notebookDir)}`
-    return `
+    return makeServiceConfig({ serviceName, imageTag });
+}
+
+function makeServiceConfigForHome({ context }) {
+  const serviceName = "home"
+  const imageTag = `ghcr.io/${getHomePackageName({context})}:${getHomeVersion()}`;
+  return makeServiceConfig({ serviceName, imageTag });
+}
+
+function makeServiceConfig({imageTag,serviceName}) {
+  return `
 apiVersion: v1
 kind: Service
 metadata:

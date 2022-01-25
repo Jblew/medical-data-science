@@ -36,13 +36,11 @@ jobs:
 
       - id: gettags
         uses: actions/github-script@v5
-        env:
-          VERSION_FILE: home/.version
         with:
           script: |
-            const fs = require("fs");
-            const baseTag = `${process.env.REGISTRY}/${process.env.IMAGE_NAME}`
-            const version = fs.readFileSync(process.env.VERSION_FILE).trim()
+            const { getHomePackageName, getHomeVersion } = require("./ci.js");
+            const baseTag = `${process.env.REGISTRY}/${getHomePackageName({ context })}`
+            const version = getHomeVersion()
             const tags = [
               `${baseTag}:${version}`,
               `${baseTag}:latest`

@@ -93,10 +93,21 @@ async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
   return notebookDirs.filter((_, index) => shouldBuildResults[index]);
 }
 
+
+function getHomeVersion() {
+  return fs.readFileSync(`${__dirname}/home/.version`).toString().trim();
+}
+
+function getHomePackageName({ context }) {
+  return `${context.repo.owner}/${context.repo.repo}-home`;
+}
+
 module.exports = {
   getNotebookName,
   getNotebookDirsThatShouldBeBuilt,
   getPackageName,
   getVersion,
   getNotebookDirs,
+  getHomeVersion,
+  getHomePackageName,
 };
