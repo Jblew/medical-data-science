@@ -27,13 +27,18 @@ function getNotebookName(notebookDir) {
   return notebookDir.split("/").pop();
 }
 
-function getPackageName(notebookDir) {
+function getPackageBaseName(notebookDir, { context }) {
   const notebookName = getNotebookName(notebookDir);
-  return `${process.env.IMAGE_NAME_BASE}-${notebookName}`.toLowerCase();
+  return `${context.repo.repo}-${notebookName}`.toLowerCase();
 }
 
-async function shouldBuild(notebookDir, { github }) {
-  const packageName = `${process.env.REGISTRY}/${getPackageName(notebookDir)}`;
+function getPackageName(notebookDir, { context }) {
+  const notebookName = getPackageBaseName(notebookDir, { context });
+  return `${context.repo.owner}-${notebookName}`.toLowerCase();
+}
+
+async function shouldBuild(notebookDir, { github, context }) {
+  const packageName = getPackageBaseName(notebookDir, { context });
   try {
     const version = getVersion(notebookDir);
     const package = await github.rest.packages.getPackageForAuthenticatedUser({

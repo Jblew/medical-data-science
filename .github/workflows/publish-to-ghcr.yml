@@ -58,7 +58,7 @@ jobs:
           script: |
             const { getPackageName, getVersion } = require(".github/workflows/utils.js")
             const notebookDir = process.env.NOTEBOOK_DIR
-            const packageName = getPackageName(notebookDir)
+            const packageName = getPackageName(notebookDir, { context })
             const baseTag = `${process.env.REGISTRY}/${packageName}`
             console.log('Package name:', baseTag)
             const version = getVersion(notebookDir)
