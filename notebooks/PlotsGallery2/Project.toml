@@ -1,7 +1,7 @@
 name = "PlotsGallery2"
 uuid = "c2a5b206-1b69-42cf-a784-58e9cdfe7c4a"
 authors = ["Jędrzej Lewandowski <jedrzejblew@gmail.com>"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
