@@ -69,16 +69,24 @@ async function shouldBuild(notebookDir, { github, context }) {
   }
 }
 
+async function shouldBuildNoFail(notebookDir, { github, context }) {
+  try {
+    return await shouldBuild(notebookDir, { github, context });
+  } catch (err) {
+    console.warn(
+      `Warning: Cannot check if ${notebookDir} should be built: `,
+      err
+    );
+    return false;
+  }
+}
+
 async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
   const notebookDirs = getNotebookDirs();
-  return await notebookDirs.filter(async (nbDir) => {
-    try {
-      return await shouldBuild(nbDir, { github, context });
-    } catch (err) {
-      console.warn(`Warning: Cannot check if ${nbDir} should be built: `, err);
-      return false;
-    }
-  });
+  const shouldBuildResults = await Promise.all(
+    notebookDirs.map((notebookDir) => shouldBuildNoFail(notebookDir, { github, context }))
+  );
+  return notebookDirs.filter((_, index) => shouldBuildResults[index])
 }
 
 module.exports = {
