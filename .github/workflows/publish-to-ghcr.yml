@@ -24,13 +24,8 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            const { getNotebookDirs, shouldBuild } = require(".github/workflows/utils.js")
-            const notebookDirs = getNotebookDirs()
-            const notebookDirsForBuilding = await notebookDirs.filter(
-              async nbDir => {
-                return await shouldBuild(nbDir, { github })
-              }
-            )
+            const { getNotebookDirsThatShouldBeBuilt } = require(".github/workflows/utils.js")
+            const notebookDirsForBuilding = await getNotebookDirsThatShouldBeBuilt({ github })
             const output = JSON.stringify(notebookDirsForBuilding)
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebookdirs::${output}`)

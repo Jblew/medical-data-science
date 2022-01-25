@@ -52,4 +52,21 @@ async function shouldBuild(notebookDir, { github }) {
   }
 }
 
-module.exports = { getNotebookDirs, shouldBuild, getPackageName, getVersion };
+async function getNotebookDirsThatShouldBeBuilt({ github }) {
+  const notebookDirs = getNotebookDirs();
+  return await notebookDirs.filter(async (nbDir) => {
+    try {
+      return await shouldBuild(nbDir, { github });
+    }
+    catch (err) {
+      console.warn(`Warning: Cannot check if ${nbDir} should be built: `, err);
+    }
+  });
+}
+
+module.exports = {
+  getNotebookDirs,
+  getNotebookDirsThatShouldBeBuilt,
+  getPackageName,
+  getVersion,
+};
