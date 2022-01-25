@@ -31,17 +31,16 @@ jobs:
                 return await shouldBuild(nbDir, { github })
               }
             )
-            const notebooksForBuildingNames = notebookDirsForBuilding.map(dir => dir.split("/").pop())
-            const output = JSON.stringify(notebooksForBuildingNames)
+            const output = JSON.stringify(notebookDirsForBuilding)
             console.log(`'${output}'\n`)
-            console.log(`::set-output name=notebooks::${output}`)
+            console.log(`::set-output name=notebookdirs::${output}`)
   
   build:
     runs-on: ubuntu-latest
     needs: [identifynotebooks]
     strategy:
       matrix:
-        notebook: ${{fromJson(needs.identifynotebooks.outputs.notebooks)}}
+        notebookdir: ${{fromJson(needs.identifynotebooks.outputs.notebookdirs)}}
       fail-fast: false
       max-parallel: 10
     steps:
@@ -56,20 +55,21 @@ jobs:
       - id: gettags
         uses: actions/github-script@v5
         env:
-          NOTEBOOK_NAME: ${{ matrix.notebook }}
+          NOTEBOOK_DIR: ${{ matrix.notebookdir }}
         with:
           script: |
-            const notebookName = process.env.NOTEBOOK_NAME
-            const baseTag = `${context.repo.owner}/${context.repo.repo}-${notebookName}`.toLowerCase()
+            const { getPackageName } = require(".github/workflows/utils.js")
+            const packageName = getPackageName(process.env.NOTEBOOK_DIR)
+            console.log('Package name:', packageName)
             const tags = [
-              `${baseTag}:latest`
+              `${packageName}:latest`
             ]
             console.log('Tags:', tags)
             console.log(`::set-output name=tags::${tags.join(".")}`)
       - name: Build and push Docker image
         uses: docker/build-push-action@v2.8.0
         with:
-          context: "./notebooks/${{ matrix.notebook }}"
+          context: "./${{ matrix.notebookdir }}"
           push: true
           tags: "${{ steps.gettags.outputs.tags }}"
 

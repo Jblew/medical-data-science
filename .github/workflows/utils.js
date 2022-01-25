@@ -30,8 +30,8 @@ function getNotebookName(notebookDir) {
 }
 
 function getPackageName(notebookDir) {
-  const notebookName = getNotebookName(notebookDir).toLowerCase();
-  return `${process.env.IMAGE_NAME_BASE}-${notebookName}`;
+  const notebookName = getNotebookName(notebookDir);
+  return `${process.env.IMAGE_NAME_BASE}-${notebookName}`.toLowerCase();
 }
 
 async function shouldBuild(notebookDir, { github }) {
@@ -54,4 +54,4 @@ async function shouldBuild(notebookDir, { github }) {
     }
 }
 
-module.exports = { getNotebookDirs, shouldBuild };
+module.exports = { getNotebookDirs, shouldBuild, getPackageName };
