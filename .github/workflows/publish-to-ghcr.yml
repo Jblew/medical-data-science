@@ -21,7 +21,20 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - id: set-notebooks
-        run: echo "::set-output name=notebooks::$(ls -d notebooks/*/ | jq -R -s -c 'split("\n")[:-1]')"
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { getNotebookDirs, shouldBuild } = require(".github/workflows/utils.js")
+            const notebookDirs = getNotebookDirs()
+            const notebookDirsForBuilding = notebookDirs.map(
+              nbDir => {
+                return shouldBuild(nbDir)
+              }
+            )
+            const output = JSON.stringify(notebookDirsForBuilding)
+            console.log(`'${output}'\n`)
+            console.log(`::set-output name=notebooks::'${output}'`)
+      - run: echo "::set-output name=notebooks::$(ls -d notebooks/*/ | jq -R -s -c 'split("\n")[:-1]')"
   build:
     runs-on: ubuntu-latest
     needs: [identifynotebooks]
