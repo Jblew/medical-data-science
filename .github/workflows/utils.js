@@ -34,7 +34,7 @@ function getPackageBaseName(notebookDir, { context }) {
 
 function getPackageName(notebookDir, { context }) {
   const notebookName = getPackageBaseName(notebookDir, { context });
-  return `${context.repo.owner}-${notebookName}`.toLowerCase();
+  return `${context.repo.owner}/${notebookName}`.toLowerCase();
 }
 
 async function shouldBuild(notebookDir, { github, context }) {
