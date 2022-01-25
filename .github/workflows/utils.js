@@ -35,12 +35,23 @@ function getPackageName(notebookDir) {
 }
 
 async function shouldBuild(notebookDir, { github }) {
-    const package = await github.rest.packages.getPackageForAuthenticatedUser({
-      package_type: "container",
-      package_name: getPackageName(notebookDir),
-    });
-    console.log(package)
-    return true;
+    const packageName = getPackageName(notebookDir);
+    try {
+        const package =
+          await github.rest.packages.getPackageForAuthenticatedUser({
+            package_type: "container",
+            package_name: packageName,
+          });
+        console.log(package)
+        return false;
+    }
+    catch (err) {
+        if (err.status === 404) {
+            console.log(`Package ${packageName} does not exist. Should be built`);
+            return true;
+        }
+        throw err;
+    }
 }
 
 module.exports = { getNotebookDirs, shouldBuild };
