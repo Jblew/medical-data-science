@@ -99,7 +99,7 @@ function getHomeVersion() {
 }
 
 function getHomePackageName({ context }) {
-  return `${context.repo.owner}/${context.repo.repo}-home`;
+  return `${context.repo.owner}/${context.repo.repo}-home`.toLowerCase();
 }
 
 module.exports = {
