@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-export function getNotebookDirs() {
+export function getNotebookDirs(): string[] {
   const notebooks_path = "notebooks";
   return fs
     .readdirSync(notebooks_path)
@@ -8,7 +8,7 @@ export function getNotebookDirs() {
     .filter((path) => fs.lstatSync(path).isDirectory());
 }
 
-export function getVersion(notebookDir) {
+export function getVersion(notebookDir: string): string {
   const projectFilePath = `${notebookDir}/Project.toml`;
   if (!fs.existsSync(projectFilePath))
     throw new Error(`File ${projectFilePath} does not exist`);
@@ -23,7 +23,7 @@ export function getVersion(notebookDir) {
   return versionMatches[0];
 }
 
-function getNotebookName(notebookDir) {
+function getNotebookName(notebookDir: string): string {
   return notebookDir.split("/").pop();
 }
 
