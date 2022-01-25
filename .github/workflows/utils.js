@@ -33,7 +33,7 @@ function getPackageName(notebookDir) {
 }
 
 async function shouldBuild(notebookDir, { github }) {
-  const packageName = getPackageName(notebookDir);
+  const packageName = `${process.env.REGISTRY}/${getPackageName(notebookDir)}`;
   try {
     const version = getVersion(notebookDir);
     const package = await github.rest.packages.getPackageForAuthenticatedUser({
