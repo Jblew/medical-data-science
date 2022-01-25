@@ -41,12 +41,17 @@ async function shouldBuild(notebookDir, { github, context }) {
   const packageName = getPackageBaseName(notebookDir, { context });
   try {
     const version = getVersion(notebookDir);
-    const package = await github.rest.packages.getPackageForAuthenticatedUser({
-      package_type: "container",
-      package_name: packageName,
-    });
-    console.log(package);
-    console.log("Version:", version);
+    const packageVersionsResp =
+      await github.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser(
+        {
+          package_type: "container",
+          package_name: packageName,
+        }
+      );
+    const packageVersions = packageVersionsResp.data;
+    console.log("Package versions:", packageVersions);
+    console.log("Required version:", version);
+    console.log('---')
     return false;
   } catch (err) {
     if (err.status === 404) {
