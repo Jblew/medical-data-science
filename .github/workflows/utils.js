@@ -58,6 +58,7 @@ async function shouldBuild(notebookDir, { github, context }) {
   try {
     const version = getVersion(notebookDir);
     const hasTag = await packageContainerHasTag(packageName, version, { github })
+    console.log(`Package ${packageName} has tag ${version}: ${hasTag}`)
     return !hasTag;
   } catch (err) {
     if (err.status === 404) {
