@@ -68,7 +68,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2.8.0
         with:
-          context: "./notebooks/${{ matrix.notebook }}"
+          context: "{{defaultContext}}:notebooks/${{ matrix.notebook }}"
           push: true
           tags: "${{ steps.gettags.outputs.tags }}"
 
