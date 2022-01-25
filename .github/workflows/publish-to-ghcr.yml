@@ -60,7 +60,7 @@ jobs:
         with:
           script: |
             const notebookName = process.env.NOTEBOOK_NAME
-            const baseTag = `${context.repo.owner}/${context.repo.repo}-${notebookName.toLowerCase()}`
+            const baseTag = `${context.repo.owner}/${context.repo.repo}-${notebookName}`.toLowerCase()
             const tags = [
               `${baseTag}:latest`
             ]
