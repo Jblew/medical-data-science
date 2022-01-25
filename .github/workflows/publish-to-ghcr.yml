@@ -31,7 +31,8 @@ jobs:
                 return await shouldBuild(nbDir, { github })
               }
             )
-            const output = JSON.stringify(notebookDirsForBuilding)
+            const notebooksForBuilding = notebookDirsForBuilding.map(dir => dir.split("/").pop())
+            const output = JSON.stringify(notebooksForBuildingNames)
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebooks::${output}`)
   
@@ -42,19 +43,31 @@ jobs:
       matrix:
         notebook: ${{fromJson(needs.identifynotebooks.outputs.notebooks)}}
     steps:
-      - run: echo ${{matrix.notebook}}
+      - run: echo "Building notebook ${{matrix.notebook}}"
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - id: gettags
+        uses: actions/github-script@v5
+        env:
+          NOTEBOOK_NAME: ${{ matrix.notebook }}
+        with:
+          script: |
+            const notebookName = process.env.NOTEBOOK_NAME
+            const tags = [
+              `${context.repo.owner}/${context.repo.repo}-${notebookName.toLowerCase()}`
+            ]
+            console.log('Tags:', tags)
+            console.log(`::set-output name=tags::${tags.join(".")}`)
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: ${{ matrix.notebook }}
+          context: "notebooks/${{ matrix.notebook }}"
           push: true
-          tags: "${{ github.repository }}-${{ matrix.notebook }}"
+          tags: "${{ steps.gettags.outputs.tags }}"
 
   # build-and-push-image:
   #   runs-on: ubuntu-latest
