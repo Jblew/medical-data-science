@@ -37,7 +37,7 @@ spec:
       http:
         paths:
           ${notebookDirs.map((notebookDir) => `
-          - path: "/${notebookDir}"
+          - path: "/notebooks/${getNotebookName(notebookDir)}"
             pathType: Prefix
             backend:
               service:
