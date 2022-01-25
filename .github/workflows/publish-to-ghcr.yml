@@ -31,7 +31,7 @@ jobs:
                 return await shouldBuild(nbDir, { github })
               }
             )
-            const notebooksForBuilding = notebookDirsForBuilding.map(dir => dir.split("/").pop())
+            const notebooksForBuildingNames = notebookDirsForBuilding.map(dir => dir.split("/").pop())
             const output = JSON.stringify(notebooksForBuildingNames)
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebooks::${output}`)
