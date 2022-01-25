@@ -28,7 +28,7 @@ jobs:
             const notebookDirs = getNotebookDirs()
             const notebookDirsForBuilding = await notebookDirs.map(
               async nbDir => {
-                return await shouldBuild(nbDir)
+                return await shouldBuild(nbDir, { github })
               }
             )
             const output = JSON.stringify(notebookDirsForBuilding)
