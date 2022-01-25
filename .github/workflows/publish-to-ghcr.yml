@@ -17,7 +17,7 @@ jobs:
   identifynotebooks:
     runs-on: ubuntu-latest
     outputs:
-      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+      notebookdirs: ${{ steps.set-notebooks.outputs.notebookdirs }}
     steps:
       - uses: actions/checkout@v2
       - id: set-notebooks
