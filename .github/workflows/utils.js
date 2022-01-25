@@ -1,15 +1,13 @@
 const fs = require("fs");
 
-
-
 function getNotebookDirs() {
-    const notebooks_path = "notebooks";
-    return fs
+  const notebooks_path = "notebooks";
+  return fs
     .readdirSync("notebooks")
     .map((name) => `notebooks/${name}`)
-        .filter((path) => fs.lstatSync(path).isDirectory());
+    .filter((path) => fs.lstatSync(path).isDirectory());
 }
-  
+
 function getVersion(notebookDir) {
   const projectFilePath = `${notebookDir}/Project.toml`;
   if (!fs.existsSync(projectFilePath))
@@ -26,7 +24,7 @@ function getVersion(notebookDir) {
 }
 
 function getNotebookName(notebookDir) {
-    return notebookDir.split("/").pop();
+  return notebookDir.split("/").pop();
 }
 
 function getPackageName(notebookDir) {
@@ -35,23 +33,23 @@ function getPackageName(notebookDir) {
 }
 
 async function shouldBuild(notebookDir, { github }) {
-    const packageName = getPackageName(notebookDir);
-    try {
-        const package =
-          await github.rest.packages.getPackageForAuthenticatedUser({
-            package_type: "container",
-            package_name: packageName,
-          });
-        console.log(package)
-        return false;
+  const packageName = getPackageName(notebookDir);
+  try {
+    const version = getVersion(notebookDir);
+    const package = await github.rest.packages.getPackageForAuthenticatedUser({
+      package_type: "container",
+      package_name: packageName,
+    });
+    console.log(package);
+    console.log("Version:", version);
+    return false;
+  } catch (err) {
+    if (err.status === 404) {
+      console.log(`Package ${packageName} does not exist. Should be built`);
+      return true;
     }
-    catch (err) {
-        if (err.status === 404) {
-            console.log(`Package ${packageName} does not exist. Should be built`);
-            return true;
-        }
-        throw err;
-    }
+    throw err;
+  }
 }
 
-module.exports = { getNotebookDirs, shouldBuild, getPackageName };
+module.exports = { getNotebookDirs, shouldBuild, getPackageName, getVersion };
