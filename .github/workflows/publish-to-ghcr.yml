@@ -25,7 +25,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            const { getNotebookDirsThatShouldBeBuilt } = require("ci.ts")
+            const { getNotebookDirsThatShouldBeBuilt } = require("./ci.ts")
             const notebookDirsForBuilding = await getNotebookDirsThatShouldBeBuilt({ github, context })
             const output = JSON.stringify(notebookDirsForBuilding)
             const hasnotebookstobuild = notebookDirsForBuilding.length > 0
@@ -60,7 +60,7 @@ jobs:
           NOTEBOOK_DIR: ${{ matrix.notebookdir }}
         with:
           script: |
-            const { getPackageName, getVersion } = require("ci.ts")
+            const { getPackageName, getVersion } = require("./ci.ts")
             const notebookDir = process.env.NOTEBOOK_DIR
             const packageName = getPackageName(notebookDir, { context })
             const baseTag = `${process.env.REGISTRY}/${packageName}`

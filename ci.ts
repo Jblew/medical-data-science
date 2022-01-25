@@ -8,7 +8,7 @@ export function getNotebookDirs() {
     .filter((path) => fs.lstatSync(path).isDirectory());
 }
 
-function getVersion(notebookDir) {
+export function getVersion(notebookDir) {
   const projectFilePath = `${notebookDir}/Project.toml`;
   if (!fs.existsSync(projectFilePath))
     throw new Error(`File ${projectFilePath} does not exist`);
