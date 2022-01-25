@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 
 export function getNotebookDirs() {
   const notebooks_path = "notebooks";
