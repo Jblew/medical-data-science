@@ -17,7 +17,7 @@ function getVersion(notebookDir) {
   const projectFileContents = fs.readFileSync(projectFilePath).toString();
   const re = /^version[^=]*=[^"]*"([^"]+)"[^\n]*$/gim;
   const versionMatches = Array.from(
-    projectFileContents2.matchAll(re),
+    projectFileContents.matchAll(re),
     (m) => m[1]
   );
   if (versionMatches.length === 0)
@@ -34,7 +34,7 @@ function getPackageName(notebookDir) {
   return `${process.env.IMAGE_NAME_BASE}-${notebookName}`;
 }
 
-function shouldBuild(notebookDir, { github }) {
+async function shouldBuild(notebookDir, { github }) {
     const package = await github.rest.packages.getPackageForAuthenticatedUser({
       package_type: "container",
       package_name: getPackageName(notebookDir),

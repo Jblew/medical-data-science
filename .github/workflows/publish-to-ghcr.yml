@@ -26,9 +26,9 @@ jobs:
           script: |
             const { getNotebookDirs, shouldBuild } = require(".github/workflows/utils.js")
             const notebookDirs = getNotebookDirs()
-            const notebookDirsForBuilding = notebookDirs.map(
-              nbDir => {
-                return shouldBuild(nbDir)
+            const notebookDirsForBuilding = await notebookDirs.map(
+              async nbDir => {
+                return await shouldBuild(nbDir)
               }
             )
             const output = JSON.stringify(notebookDirsForBuilding)
