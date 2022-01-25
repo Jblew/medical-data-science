@@ -37,26 +37,28 @@ function getPackageName(notebookDir, { context }) {
   return `${context.repo.owner}/${notebookName}`.toLowerCase();
 }
 
+async function packageContainerHasTag(packageName, tag, { github }) {
+  const packageVersionsResp =
+    await github.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser(
+      {
+        package_type: "container",
+        package_name: packageName,
+      }
+    );
+  const packageVersions = packageVersionsResp.data;
+
+  const versionWithTag = packageVersions.filter((pv) =>
+    pv.metadata.container.tags.includes(tag)
+  )
+  return versionWithTag.length > 0
+}
+
 async function shouldBuild(notebookDir, { github, context }) {
   const packageName = getPackageBaseName(notebookDir, { context });
   try {
     const version = getVersion(notebookDir);
-    const packageVersionsResp =
-      await github.rest.packages.getAllPackageVersionsForPackageOwnedByAuthenticatedUser(
-        {
-          package_type: "container",
-          package_name: packageName,
-        }
-      );
-    const packageVersions = packageVersionsResp.data;
-    console.log("Package versions:", packageVersions);
-    console.log(
-      "Package versions metadata:",
-      packageVersions.map((pv) => pv.metadata.container)
-    );
-    console.log("Required version:", version);
-    console.log('---')
-    return false;
+    const hasTag = await packageContainerHasTag(packageName, version, { github })
+    return !hasTag;
   } catch (err) {
     if (err.status === 404) {
       console.log(`Package ${packageName} does not exist. Should be built`);
