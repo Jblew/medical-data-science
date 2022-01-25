@@ -75,6 +75,7 @@ async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
       return await shouldBuild(nbDir, { github, context });
     } catch (err) {
       console.warn(`Warning: Cannot check if ${nbDir} should be built: `, err);
+      return false;
     }
   });
 }
