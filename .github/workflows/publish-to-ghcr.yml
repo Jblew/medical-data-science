@@ -26,7 +26,7 @@ jobs:
           script: |
             const { getNotebookDirs, shouldBuild } = require(".github/workflows/utils.js")
             const notebookDirs = getNotebookDirs()
-            const notebookDirsForBuilding = await notebookDirs.map(
+            const notebookDirsForBuilding = await notebookDirs.filter(
               async nbDir => {
                 return await shouldBuild(nbDir, { github })
               }
@@ -43,6 +43,18 @@ jobs:
         notebook: ${{fromJson(needs.identifynotebooks.outputs.notebooks)}}
     steps:
       - run: echo ${{matrix.notebook}}
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: ${{ matrix.notebook }}
+          push: true
+          tags: "${{ github.repository }}-${{ matrix.notebook }}"
 
   # build-and-push-image:
   #   runs-on: ubuntu-latest
