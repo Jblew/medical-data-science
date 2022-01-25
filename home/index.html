@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Medical Data Science by Jędrzej Bogumił (JB) Lewandowski</title>
-  <style>
-    body {
+  <head>
+    <meta charset="utf-8" />
+    <title>Medical Data Science by Jędrzej Bogumił (JB) Lewandowski</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+      body {
         display: flex;
         width: 100%;
         position: absolute;
@@ -16,33 +25,146 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-    }
+      }
 
-    .sidebar {
-        flex: 15%;
+      .sidebar {
+        width: 300px;
         overflow-y: scroll;
-    }
+      }
 
-    .main {
-        flex: 85%;
+      .main {
+        flex-grow: 5;
         display: flex;
-    }
+      }
 
-    .main iframe {
+      .main iframe {
         flex: 100%;
-    }
-  </style>
-</head>
-<body>
-<nav class="sidebar">
-    <h1>Medical data science</h1>
-    <h2>By Jędrzej Bogumił (JB) Lewandowski</h2>
-    <ul>
+      }
+    </style>
+
+    <style>
+      /* Gridliver */
+      html, .root {
+  font-size: 14px;
+  line-height: 18px;
+}
+body, .article {
+  font-family: sans-serif;
+  font-size: 1em;
+  line-height: 1.28571429em;
+}
+h1, .h1 {
+  font-size: 4.21428571em;
+  line-height: 1.22033898em;
+  margin-top: 0.30508475em;
+  margin-bottom: 0.6101695em;
+}
+h2, .h2 {
+  font-size: 2.64285714em;
+  line-height: 1.45945946em;
+  margin-top: 0.48648649em;
+  margin-bottom: 0.48648649em;
+}
+h3, .h3 {
+  font-size: 1.64285714em;
+  line-height: 1.56521739em;
+  margin-top: 0.7826087em;
+  margin-bottom: 0em;
+}
+h4, .h4 {
+  font-size: 1em;
+  line-height: 1.28571429em;
+  margin-top: 1.28571429em;
+  margin-bottom: 0em;
+}
+h5, .h5 {
+  font-size: 1em;
+  line-height: 1.28571429em;
+  margin-top: 1.28571429em;
+  margin-bottom: 0em;
+}
+p, ul, ol, pre, table, blockquote {
+  margin-top: 0em;
+  margin-bottom: 1.28571429em;
+}
+ul ul, ol ol, ul ol, ol ul {
+  margin-top: 0em;
+  margin-bottom: 0em;
+}
+
+/* Let's make sure all's aligned */
+hr, .hr {
+  border: 1px solid;
+  margin: -1px 0;
+}
+a, b, i, strong, em, small, code {
+  line-height: 0;
+}
+sub, sup {
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+    </style>
+
+    <style>
+      body {
+        font-family: "Raleway", Helvetica, sans-serif;
+        font-weight: 400;
+      }
+
+      a {
+          color: white;
+          text-decoration: underline;
+      }
+
+      a:hover {
+          text-decoration: none;
+      }
+
+      .sidebar {
+        padding: 0 1em;
+        background: #003554;
+        color: white;
+      }
+
+      .main iframe {
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="sidebar">
+      <h1 class="h2 mb-0">Medical<br /> data science</h1>
+      <p><i><a href="/what-is-medical-data-science">Can maths save healthcare?</a></i></p>
+      <h2 class="h5 mb-0">By <a href="https://jblewandowski.com/">Jędrzej B. Lewandowski (JB)</a></h2>
+      <p>M.D. </p>
+      <p>&nbsp;</p>
+      <p>
+      <ul>
         <li>Plots Gallery 2</li>
-    </ul>
-</nav>
-<main class="main">
-    <iframe src="https://medicaldatascience.jblewandowski.com/notebooks/plotsgallery2" title="Title"></iframe>
-</main>
-</body>
+      </ul>
+      </p>
+    </nav>
+    <main class="main">
+      <iframe
+        src="https://medicaldatascience.jblewandowski.com/notebooks/plotsgallery2"
+        title="Title"
+      ></iframe>
+    </main>
+  </body>
 </html>
