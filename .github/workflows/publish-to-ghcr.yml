@@ -34,7 +34,7 @@ jobs:
             const output = JSON.stringify(notebookDirsForBuilding)
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebooks::'${output}'`)
-      - run: echo "::set-output name=notebooks::$(ls -d notebooks/*/ | jq -R -s -c 'split("\n")[:-1]')"
+  
   build:
     runs-on: ubuntu-latest
     needs: [identifynotebooks]
