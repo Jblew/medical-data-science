@@ -50,6 +50,10 @@ async function shouldBuild(notebookDir, { github, context }) {
       );
     const packageVersions = packageVersionsResp.data;
     console.log("Package versions:", packageVersions);
+    console.log(
+      "Package versions metadata:",
+      packageVersions.map((pv) => pv.metadata.container)
+    );
     console.log("Required version:", version);
     console.log('---')
     return false;
