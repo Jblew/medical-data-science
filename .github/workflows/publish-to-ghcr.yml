@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       notebookdirs: ${{ steps.set-notebooks.outputs.notebookdirs }}
+      hasnotebookstobuild: ${{ steps.set-notebooks.outputs.hasnotebookstobuild }}
     steps:
       - uses: actions/checkout@v2
       - id: set-notebooks
@@ -27,8 +28,10 @@ jobs:
             const { getNotebookDirsThatShouldBeBuilt } = require(".github/workflows/utils.js")
             const notebookDirsForBuilding = await getNotebookDirsThatShouldBeBuilt({ github, context })
             const output = JSON.stringify(notebookDirsForBuilding)
+            const hasnotebookstobuild = notebookDirsForBuilding.length > 0
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebookdirs::${output}`)
+            console.log(`::set-output name=hasnotebookstobuild::${hasnotebookstobuild}`)
   
   build:
     runs-on: ubuntu-latest
@@ -36,6 +39,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    if: ${{ needs.identifynotebooks.outputs.hasnotebookstobuild == 'true' }}
     strategy:
       matrix:
         notebookdir: ${{fromJson(needs.identifynotebooks.outputs.notebookdirs)}}
