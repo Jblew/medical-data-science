@@ -57,13 +57,12 @@ async function shouldBuild(notebookDir, { github, context }) {
   }
 }
 
-async function getNotebookDirsThatShouldBeBuilt({ github }) {
+async function getNotebookDirsThatShouldBeBuilt({ github, context }) {
   const notebookDirs = getNotebookDirs();
   return await notebookDirs.filter(async (nbDir) => {
     try {
-      return await shouldBuild(nbDir, { github });
-    }
-    catch (err) {
+      return await shouldBuild(nbDir, { github, context });
+    } catch (err) {
       console.warn(`Warning: Cannot check if ${nbDir} should be built: `, err);
     }
   });

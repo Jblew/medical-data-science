@@ -25,7 +25,7 @@ jobs:
         with:
           script: |
             const { getNotebookDirsThatShouldBeBuilt } = require(".github/workflows/utils.js")
-            const notebookDirsForBuilding = await getNotebookDirsThatShouldBeBuilt({ github })
+            const notebookDirsForBuilding = await getNotebookDirsThatShouldBeBuilt({ github, context })
             const output = JSON.stringify(notebookDirsForBuilding)
             console.log(`'${output}'\n`)
             console.log(`::set-output name=notebookdirs::${output}`)
