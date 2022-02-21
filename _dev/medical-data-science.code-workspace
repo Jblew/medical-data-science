@@ -5,6 +5,7 @@
 	"settings": {
 		"files.associations": {
 			".md.jl": "juliamarkdown"
-		}
+		},
+		"docker.host": "ssh://debian@152.228.161.80"
 	}
 }
